@@ -316,9 +316,10 @@ window.addEventListener('resize', resize);
 resize();
 
 const nodes = [];
-const NODE_COUNT = 25; // Pontok száma
-const MAX_DIST = 150; // Max távolság az összekötéshez
-const SPEED = 0.5;
+const NODE_COUNT = 15; // Pontok száma
+const MAX_DIST = 400; // Maximális távolság az összekötéshez
+const MIN_DIST = 100; // Ezen a távolságon belül a legerősebb a fény
+const SPEED = 0.6; 
 
 // Pontok (nodes) inicializálása
 for (let i = 0; i < NODE_COUNT; i++) {
@@ -326,21 +327,25 @@ for (let i = 0; i < NODE_COUNT; i++) {
         x: Math.random() * cvs.width,
         y: Math.random() * cvs.height,
         vx: (Math.random() - 0.5) * SPEED,
-        vy: (Math.random() - 0.5) * SPEED,
-        id: i // Minden pontnak egyedi ID-t adunk
+        vy: (Math.random() - 0.5) * SPEED
     });
 }
 
 /**
- * Villámvonal rajzolása két pont között
+ * Villámvonal rajzolása fraktálos elven
+ * @param {number} x1 - Kezdő X
+ * @param {number} y1 - Kezdő Y
+ * @param {number} x2 - Vég X
+ * @param {number} y2 - Vég Y
+ * @param {number} segments - Töréspontok száma
+ * @param {number} displace - Elmozdulás mértéke
  */
-function lightning(x1, y1, x2, y2, segments = 5, displace = 10) {
-    if (segments < 1) return;
-    
+function lightning(x1, y1, x2, y2, segments = 8, displace = 20) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     for (let i = 1; i < segments; i++) {
         const t = i / segments;
+        // Töréspontok generálása
         const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * displace;
         const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * displace;
         ctx.lineTo(x, y);
@@ -349,35 +354,8 @@ function lightning(x1, y1, x2, y2, segments = 5, displace = 10) {
     ctx.stroke();
 }
 
-/**
- * Alakzat (poligon) rajzolása az összekötött pontokból
- */
-function drawPolygon(points, fillStyle) {
-    if (points.length < 3) return;
-
-    // Belső kitöltés
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-        ctx.lineTo(points[i].x, points[i].y);
-    }
-    ctx.closePath();
-
-    ctx.fillStyle = fillStyle;
-    ctx.fill();
-
-    // Körvonal (finom villámvonal)
-    ctx.strokeStyle = `rgba(127, 255, 150, 0.8)`;
-    ctx.lineWidth = 1;
-    for (let i = 0; i < points.length; i++) {
-        const p1 = points[i];
-        const p2 = points[(i + 1) % points.length];
-        lightning(p1.x, p1.y, p2.x, p2.y, 4, 5);
-    }
-}
-
 function draw() {
-    // Halványodó háttér
+    // Halványodó háttér (Utófény effektus)
     ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
     ctx.fillRect(0, 0, cvs.width, cvs.height);
 
@@ -389,83 +367,47 @@ function draw() {
         if (n.y < 0 || n.y > cvs.height) n.vy *= -1;
     });
 
-    const connectedComponents = [];
-    const visited = new Set();
-    const adj = new Map(); // Szomszédsági lista
-
-    // Segédfüggvény a biztonságos lista elérésére/inicializálására
-    const getAdjList = (nodeId) => {
-        if (!adj.has(nodeId)) {
-            adj.set(nodeId, []);
-        }
-        return adj.get(nodeId);
-    };
-
-    // 1. Szomszédsági lista építése
+    // Villámok rajzolása minden pontpár között
     for (let i = 0; i < NODE_COUNT; i++) {
-        const nodeA = nodes[i];
         for (let j = i + 1; j < NODE_COUNT; j++) {
-            const nodeB = nodes[j];
-            const d = Math.hypot(nodeA.x - nodeB.x, nodeA.y - nodeB.y);
-            
+            const a = nodes[i], b = nodes[j];
+            const d = Math.hypot(a.x - b.x, a.y - b.y);
+
+            // Csak ha a maximális távolságon belül vannak
             if (d < MAX_DIST) {
-                getAdjList(nodeA.id).push(nodeB.id);
-                getAdjList(nodeB.id).push(nodeA.id);
+                
+                // Intenzitás kiszámítása: Közeli pontok = 1.0 (max), távoli pontok = 0.0
+                const intensity = Math.max(0, 1 - (d - MIN_DIST) / (MAX_DIST - MIN_DIST));
+                
+                // Villám színének és vastagságának beállítása
+                const alpha = intensity * 0.8; // Átlátszóság
+                ctx.strokeStyle = `rgba(127, 255, 150, ${alpha})`;
+                ctx.lineWidth = 1 + intensity * 2; // Vastagság: 1-től 3-ig
+                
+                // Erőteljes utófény a villámvonal körül
+                ctx.shadowBlur = 10 + intensity * 20; // Közeli erősebb
+                ctx.shadowColor = `rgba(127, 255, 150, ${intensity})`;
+
+                lightning(a.x, a.y, b.x, b.y, 8, 20 * (1 - intensity)); // Rövid villámoknál kisebb elmozdulás
+
+                // Árnyék visszaállítása
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
             }
         }
     }
     
-    // 2. Összekötött komponensek (alakzatok) keresése DFS-sel
-    function dfs(nodeId, currentComponent) {
-        visited.add(nodeId);
-        currentComponent.push(nodes.find(n => n.id === nodeId));
-        
-        (adj.get(nodeId) || []).forEach(neighborId => { 
-            if (!visited.has(neighborId)) {
-                dfs(neighborId, currentComponent);
-            }
-        });
-    }
-
+    // Fénylő pontok rajzolása (melyekből a villámok indulnak)
     nodes.forEach(n => {
-        if (!visited.has(n.id) && adj.has(n.id)) { 
-            const component = [];
-            dfs(n.id, component);
-            if (component.length >= 3) {
-                connectedComponents.push(component);
-            }
-        }
-    });
-
-    // 3. Alakzatok rajzolása (kitöltés és villámvonalas körvonal)
-    connectedComponents.forEach(component => {
-        const intensity = Math.min(0.25, 0.05 + component.length * 0.01);
-        
+        // Erős fény a pont körül
         ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(127, 255, 150, 1)'; 
-
-        drawPolygon(component, `rgba(127, 255, 150, ${intensity})`);
-        
-        ctx.shadowBlur = 0;
-        ctx.shadowColor = 'transparent';
-    });
-
-
-    // Fénylő pontok (node-ok) rajzolása
-    nodes.forEach(n => {
-        // Középpont
-        ctx.fillStyle = 'rgba(0,156,0,1)';
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Glow
-        ctx.shadowBlur = 8;
         ctx.shadowColor = 'rgba(127, 255, 150, 1)';
-        ctx.fillStyle = 'rgba(127, 255, 150, 0.4)';
+        ctx.fillStyle = 'rgba(127, 255, 150, 0.8)';
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 5, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, 3, 0, Math.PI * 2);
         ctx.fill();
+        
+        // Visszaállítás
         ctx.shadowBlur = 0;
         ctx.shadowColor = 'transparent';
     });
