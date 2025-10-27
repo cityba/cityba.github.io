@@ -299,31 +299,42 @@ document.getElementById('hireBtn').onclick = ()=>{
 
 // ===== Villám canvas =====
 
-const heroDiv = document.querySelector('.hero');
+// ===== Villám canvas az egész oldalon =====
+const bodyDiv = document.body;
 const cvs = document.createElement('canvas');
 cvs.id = 'scene';
-cvs.style.position = 'absolute';
-cvs.style.inset = '0';
+cvs.style.position = 'fixed';
+cvs.style.top = '0';
+cvs.style.left = '0';
+cvs.style.width = '100%';
+cvs.style.height = '100%';
 cvs.style.zIndex = '0';
 cvs.style.pointerEvents = 'none';
-heroDiv.prepend(cvs);
+bodyDiv.prepend(cvs);
 
 const ctx = cvs.getContext('2d');
-const resize = () => { cvs.width = heroDiv.offsetWidth; cvs.height = heroDiv.offsetHeight; };
-window.addEventListener('resize', resize); resize();
+const resize = () => { cvs.width = window.innerWidth; cvs.height = window.innerHeight; };
+window.addEventListener('resize', resize);
+resize();
 
 const nodes = [];
 for(let i=0;i<10;i++){
-  nodes.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6});
+  nodes.push({
+    x: Math.random() * cvs.width,
+    y: Math.random() * cvs.height,
+    vx: (Math.random() - 0.5) * 0.6,
+    vy: (Math.random() - 0.5) * 0.6
+  });
 }
 
+// Villám rajzoló és animáció
 function lightning(x1,y1,x2,y2,segments=10){
   ctx.beginPath();
   ctx.moveTo(x1,y1);
   for(let i=1;i<segments;i++){
     const t=i/segments;
-    const x = x1+(x2-x1)*t + (Math.random()-0.5)*20;
-    const y = y1+(y2-y1)*t + (Math.random()-0.5)*20;
+    const x = x1 + (x2-x1)*t + (Math.random()-0.5)*20;
+    const y = y1 + (y2-y1)*t + (Math.random()-0.5)*20;
     ctx.lineTo(x,y);
   }
   ctx.lineTo(x2,y2);
@@ -332,6 +343,7 @@ function lightning(x1,y1,x2,y2,segments=10){
 
 function draw(){
   ctx.clearRect(0,0,cvs.width,cvs.height);
+  
   for(let i=0;i<nodes.length;i++){
     const n=nodes[i];
     n.x+=n.vx; n.y+=n.vy;
@@ -344,7 +356,7 @@ function draw(){
       const a=nodes[i], b=nodes[j];
       const d=Math.hypot(a.x-b.x,a.y-b.y);
       if(d<200){
-        ctx.strokeStyle=`rgba(255,255,255,${0.6 - d/400})`; // fehérebb, erősebb
+        ctx.strokeStyle=`rgba(255,255,255,${0.6 - d/400})`; // fehérebb és erősebb
         ctx.lineWidth=1.5 + Math.random()*1.2;
         lightning(a.x,a.y,b.x,b.y,8);
       }
@@ -361,6 +373,7 @@ function draw(){
   requestAnimationFrame(draw);
 }
 draw();
+
 </script>
 </body>
 </html>
