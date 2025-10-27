@@ -298,7 +298,6 @@ document.getElementById('hireBtn').onclick = ()=>{
 
 // ===== Villám canvas =====
 
-// ===== Villám canvas az egész oldalon, erőteljesebb fénnyel =====
 const bodyDiv = document.body;
 const cvs = document.createElement('canvas');
 cvs.id = 'scene';
@@ -316,66 +315,161 @@ const resize = () => { cvs.width = window.innerWidth; cvs.height = window.innerH
 window.addEventListener('resize', resize);
 resize();
 
+const shapes = ['circle', 'square', 'triangle', 'octagon'];
 const nodes = [];
-for(let i=0;i<10;i++){
-  nodes.push({
-    x: Math.random() * cvs.width,
-    y: Math.random() * cvs.height,
-    vx: (Math.random() - 0.5) * 0.6,
-    vy: (Math.random() - 0.5) * 0.6
-  });
+const nodeCount = 15; // Növeltük a számot a jobb hatás érdekében
+const speed = 0.8; // Növeltük a sebességet
+const maxDistance = 300; // Csökkentettük a maximális távolságot a lokálisabb villámokhoz
+
+// Inicializálás
+for (let i = 0; i < nodeCount; i++) {
+    nodes.push({
+        x: Math.random() * cvs.width,
+        y: Math.random() * cvs.height,
+        vx: (Math.random() - 0.5) * speed,
+        vy: (Math.random() - 0.5) * speed,
+        shape: shapes[Math.floor(Math.random() * shapes.length)], // Kezdeti alakzat
+        transformCounter: Math.floor(Math.random() * 240) // Számláló a transzformáláshoz (pl. 4 másodpercenként)
+    });
 }
 
-function lightning(x1,y1,x2,y2,segments=20){
-  ctx.beginPath();
-  ctx.moveTo(x1,y1);
-  for(let i=1;i<segments;i++){
-    const t=i/segments;
-    const x = x1 + (x2-x1)*t + (Math.random()-0.5)*20;
-    const y = y1 + (y2-y1)*t + (Math.random()-0.5)*20;
-    ctx.lineTo(x,y);
-  }
-  ctx.lineTo(x2,y2);
-  ctx.stroke();
-}
-
-function draw(){
-  ctx.clearRect(0,0,cvs.width,cvs.height);
-
-  // Mozgatás
-  for(let i=0;i<nodes.length;i++){
-    const n=nodes[i];
-    n.x+=n.vx; n.y+=n.vy;
-    if(n.x<0||n.x>cvs.width) n.vx*=-1;
-    if(n.y<0||n.y>cvs.height) n.vy*=-1;
-  }
-
-  // Villámok
-  for(let i=0;i<nodes.length;i++){
-    for(let j=i+1;j<nodes.length;j++){
-      const a=nodes[i], b=nodes[j];
-      const d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(d<800){ // nagyobb távolságot is összeköt
-        const intensity = Math.min(1, 0.8 - d/600 + 0.2); // távolabb erősebb
-        ctx.strokeStyle=`rgba(0,156,0,${intensity})`;
-        ctx.lineWidth=2 + Math.random()*1.5;
-        lightning(a.x,a.y,b.x,b.y,8);
-      }
-    }
-  }
-
-  // Glow pontok
-  nodes.forEach(n=>{
-    ctx.fillStyle='rgba(0,156,0,0.3)';
+/**
+ * Villámvonal rajzolása fraktálos elven
+ * @param {number} x1 - Kezdő X
+ * @param {number} y1 - Kezdő Y
+ * @param {number} x2 - Vég X
+ * @param {number} y2 - Vég Y
+ * @param {number} segments - Szegmensek száma
+ */
+function lightning(x1, y1, x2, y2, segments = 10) {
     ctx.beginPath();
-    ctx.arc(n.x,n.y,4,0,Math.PI*2);
-    ctx.fill();
-  });
+    ctx.moveTo(x1, y1);
+    for (let i = 1; i < segments; i++) {
+        const t = i / segments;
+        // Enyhébb random eltérés a simább, de mégis "villámszerű" vonalhoz
+        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 15;
+        const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * 15;
+        ctx.lineTo(x, y);
+    }
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
 
-  requestAnimationFrame(draw);
+/**
+ * Alakzat rajzolása
+ * @param {number} x - Közép X
+ * @param {number} y - Közép Y
+ * @param {string} shape - Alakzat típusa
+ * @param {number} size - Méret (sugár/féloldal)
+ */
+function drawShape(x, y, shape, size) {
+    ctx.beginPath();
+    switch (shape) {
+        case 'circle': // Kör
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            break;
+        case 'square': // Négyzet (forgatva 45 fokkal)
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(Math.PI / 4);
+            ctx.rect(-size, -size, size * 2, size * 2);
+            ctx.restore();
+            break;
+        case 'triangle': // Háromszög
+            for (let i = 0; i < 3; i++) {
+                const angle = (i * 2 * Math.PI) / 3 - Math.PI / 2;
+                const px = x + size * Math.cos(angle);
+                const py = y + size * Math.sin(angle);
+                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            break;
+        case 'octagon': // Nyolcszög
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * 2 * Math.PI) / 8;
+                const px = x + size * Math.cos(angle);
+                const py = y + size * Math.sin(angle);
+                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            break;
+    }
+    ctx.fill();
+}
+
+function draw() {
+    // Halványodó háttér az utófény hatásért
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+
+    // Mozgatás és alakzat transzformáció
+    nodes.forEach(n => {
+        // Mozgás
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > cvs.width) n.vx *= -1;
+        if (n.y < 0 || n.y > cvs.height) n.vy *= -1;
+
+        // Alakzat transzformáció
+        n.transformCounter = (n.transformCounter + 1) % 240; // 240 képkockánként (~4 mp)
+        if (n.transformCounter === 0) {
+            let newShape;
+            do {
+                newShape = shapes[Math.floor(Math.random() * shapes.length)];
+            } while (newShape === n.shape); // Biztosan új alakzat
+            n.shape = newShape;
+        }
+    });
+
+    // Villámok
+    for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+            const a = nodes[i],
+                b = nodes[j];
+            const d = Math.hypot(a.x - b.x, a.y - b.y);
+
+            if (d < maxDistance) {
+                // Intenzitás a távolságtól függően
+                const intensity = Math.max(0, 1.2 - d / maxDistance) * 0.9;
+                
+                // Erősebb fényhatás a távolság és az idő függvényében
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = `rgba(127, 255, 150, ${intensity})`; 
+                ctx.strokeStyle = `rgba(127, 255, 150, ${intensity})`;
+                
+                // Véletlenszerű vonalvastagság
+                ctx.lineWidth = 1.5 + Math.random() * 1.5; 
+                
+                lightning(a.x, a.y, b.x, b.y, 8);
+                
+                // Árnyék visszaállítása
+                ctx.shadowBlur = 0;
+                ctx.shadowColor = 'transparent';
+            }
+        }
+    }
+
+    // Alakzatok rajzolása (Glow pontok)
+    nodes.forEach(n => {
+        // Kisebb, zöld középpont
+        ctx.fillStyle = `rgb(0, 156, 0)`;
+        drawShape(n.x, n.y, n.shape, 3);
+        
+        // Utófény a pontok körül
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = `rgba(127, 255, 150, 1)`;
+        ctx.fillStyle = `rgba(127, 255, 150, 0.5)`;
+        drawShape(n.x, n.y, n.shape, 6);
+        
+        // Árnyék visszaállítása
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
+    });
+
+
+    requestAnimationFrame(draw);
 }
 draw();
-
 </script>
 </body>
 </html>
