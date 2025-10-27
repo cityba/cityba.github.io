@@ -211,19 +211,35 @@ th,td {
     </div>
   </div>
 
-  <section style="margin-top:28px">
+ <section style="margin-top:28px">
   <div class="card">
     <h3>Kapcsolat & Megrendelés</h3>
     <p class="muted">Küldj üzenetet, vagy töltsd le a CV-t — cégként vállalok megbízásokat.</p>
-    <form id="contactForm" action="https://formsubmit.co/cityba@gmail.com" method="POST" target="_blank">
-      <input type="hidden" name="_subject" value="Új megbízás – cityba oldalról">
-      <input type="text" name="name" placeholder="Név" required style="padding:8px;width:48%;margin-right:4%;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
-      <input type="email" name="email" placeholder="Email" required style="padding:8px;width:48%;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
-      <textarea name="message" placeholder="Rövid leírás a megbízásról" required style="display:block;width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" rows="4"></textarea>
-      <button class="btn" type="submit" style="margin-top:10px">Küldés</button>
+    <form id="contactForm" style="display:flex;flex-direction:column;gap:10px">
+      <input type="text" id="name" placeholder="Név" required style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+      <input type="email" id="email" placeholder="Email" required style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+      <textarea id="message" placeholder="Rövid leírás a megbízásról" required style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" rows="4"></textarea>
+      <button type="button" class="btn" onclick="sendEmail()">Küldés</button>
     </form>
   </div>
 </section>
+
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  (function(){emailjs.init('YOUR_EMAILJS_USER_ID');})();
+
+  function sendEmail(){
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+
+    if(!name || !email || !message){ alert('Kérlek töltsd ki az összes mezőt!'); return; }
+
+    emailjs.send('YOUR_SERVICE_ID','YOUR_TEMPLATE_ID',{name,email,message})
+      .then(()=>{alert('Üzenet elküldve!'); document.getElementById('contactForm').reset();})
+      .catch(err=>{alert('Hiba az üzenet küldésekor: '+err);});
+  }
+</script>
 </main>
 
 <footer>© Szitányi András • cityba.github.io</footer>
