@@ -326,7 +326,7 @@ for(let i=0;i<10;i++){
   });
 }
 
-function lightning(x1,y1,x2,y2,segments=10){
+function lightning(x1,y1,x2,y2,segments=20){
   ctx.beginPath();
   ctx.moveTo(x1,y1);
   for(let i=1;i<segments;i++){
@@ -355,8 +355,8 @@ function draw(){
     for(let j=i+1;j<nodes.length;j++){
       const a=nodes[i], b=nodes[j];
       const d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(d<400){ // nagyobb távolságot is összeköt
-        const intensity = Math.min(1, 0.8 - d/600 + 0.3); // távolabb erősebb
+      if(d<800){ // nagyobb távolságot is összeköt
+        const intensity = Math.min(1, 0.8 - d/600 + 0.2); // távolabb erősebb
         ctx.strokeStyle=`rgba(0,156,0,${intensity})`;
         ctx.lineWidth=2 + Math.random()*1.5;
         lightning(a.x,a.y,b.x,b.y,8);
