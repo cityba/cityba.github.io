@@ -33,29 +33,6 @@ header {
   position: relative;
 }
 
-/* ===== ⚡ VILLÁM ANIMÁCIÓ ===== */
-#lightning {
-  position: absolute;
-  top: -120px;
-  left: 0;
-  width: 100%;
-  height: 160px;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(88,166,255,0.4), transparent 60%);
-}
-.lightbeam {
-  position: absolute;
-  width: 2px;
-  background: linear-gradient(180deg, #58a6ff, transparent);
-  animation: flash 2s infinite ease-in-out;
-  filter: drop-shadow(0 0 6px #58a6ff);
-}
-@keyframes flash {
-  0%,100% { opacity: 0.1; height: 40px; }
-  50% { opacity: 1; height: 140px; }
-}
-
 /* ===== HERO ===== */
 .hero {
   background: rgba(10,20,35,0.5);
@@ -67,6 +44,7 @@ header {
   position: relative;
   z-index: 1;
   box-shadow: 0 0 40px rgba(88,166,255,0.1);
+  overflow: hidden;
 }
 .avatar {
   width: 128px;
@@ -160,14 +138,21 @@ th,td {
   border-bottom: 1px solid rgba(255,255,255,0.03);
   text-align: left;
 }
+
+/* ===== Lightning Canvas ===== */
+#scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <div id="lightning"></div>
-
   <div class="hero">
+    <canvas id="scene"></canvas>
     <div class="avatar">cityba</div>
     <div class="intro">
       <h1>Szitányi András</h1>
@@ -245,16 +230,6 @@ th,td {
 </div>
 
 <script>
-// ===== Villám animáció =====
-const lightning = document.getElementById('lightning');
-for (let i=0;i<20;i++){
-  const beam = document.createElement('div');
-  beam.className = 'lightbeam';
-  beam.style.left = Math.random()*100 + '%';
-  beam.style.animationDelay = (Math.random()*2)+'s';
-  lightning.appendChild(beam);
-}
-
 // ===== Véletlen kódok =====
 const sampleCodes = [
   "for(i=0;i<10;i++){console.log(i)}",
@@ -321,6 +296,62 @@ document.getElementById('downloadCv').onclick = ()=>{
 document.getElementById('hireBtn').onclick = ()=>{
   document.getElementById('contactForm').scrollIntoView({behavior:'smooth'});
 };
+
+// ===== Villám canvas =====
+const cvs = document.getElementById('scene');
+const ctx = cvs.getContext('2d');
+const resize = () => { cvs.width = cvs.offsetWidth; cvs.height = cvs.offsetHeight; };
+window.addEventListener('resize', resize); resize();
+
+const nodes = [];
+for(let i=0;i<10;i++){
+  nodes.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6});
+}
+
+function lightning(x1,y1,x2,y2,segments=10){
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  for(let i=1;i<segments;i++){
+    const t=i/segments;
+    const x = x1+(x2-x1)*t + (Math.random()-0.5)*20;
+    const y = y1+(y2-y1)*t + (Math.random()-0.5)*20;
+    ctx.lineTo(x,y);
+  }
+  ctx.lineTo(x2,y2);
+  ctx.stroke();
+}
+
+function draw(){
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  for(let i=0;i<nodes.length;i++){
+    const n=nodes[i];
+    n.x+=n.vx; n.y+=n.vy;
+    if(n.x<0||n.x>cvs.width) n.vx*=-1;
+    if(n.y<0||n.y>cvs.height) n.vy*=-1;
+  }
+
+  for(let i=0;i<nodes.length;i++){
+    for(let j=i+1;j<nodes.length;j++){
+      const a=nodes[i], b=nodes[j];
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<200){
+        ctx.strokeStyle=`rgba(88,166,255,${0.3 - d/600})`;
+        ctx.lineWidth=1+Math.random()*0.8;
+        lightning(a.x,a.y,b.x,b.y,8);
+      }
+    }
+  }
+
+  ctx.fillStyle='rgba(88,166,255,0.15)';
+  nodes.forEach(n=>{
+    ctx.beginPath();
+    ctx.arc(n.x,n.y,2.4,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(draw);
+}
+draw();
 </script>
 </body>
 </html>
