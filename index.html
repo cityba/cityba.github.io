@@ -299,7 +299,7 @@ document.getElementById('hireBtn').onclick = ()=>{
 
 // ===== Villám canvas =====
 
-// ===== Villám canvas az egész oldalon =====
+// ===== Villám canvas az egész oldalon, erőteljesebb fénnyel =====
 const bodyDiv = document.body;
 const cvs = document.createElement('canvas');
 cvs.id = 'scene';
@@ -327,7 +327,6 @@ for(let i=0;i<10;i++){
   });
 }
 
-// Villám rajzoló és animáció
 function lightning(x1,y1,x2,y2,segments=10){
   ctx.beginPath();
   ctx.moveTo(x1,y1);
@@ -343,7 +342,8 @@ function lightning(x1,y1,x2,y2,segments=10){
 
 function draw(){
   ctx.clearRect(0,0,cvs.width,cvs.height);
-  
+
+  // Mozgatás
   for(let i=0;i<nodes.length;i++){
     const n=nodes[i];
     n.x+=n.vx; n.y+=n.vy;
@@ -351,22 +351,25 @@ function draw(){
     if(n.y<0||n.y>cvs.height) n.vy*=-1;
   }
 
+  // Villámok
   for(let i=0;i<nodes.length;i++){
     for(let j=i+1;j<nodes.length;j++){
       const a=nodes[i], b=nodes[j];
       const d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(d<200){
-        ctx.strokeStyle=`rgba(255,255,255,${0.6 - d/400})`; // fehérebb és erősebb
-        ctx.lineWidth=1.5 + Math.random()*1.2;
+      if(d<400){ // nagyobb távolságot is összeköt
+        const intensity = Math.min(1, 0.8 - d/600 + 0.3); // távolabb erősebb
+        ctx.strokeStyle=`rgba(255,255,255,${intensity})`;
+        ctx.lineWidth=2 + Math.random()*1.5;
         lightning(a.x,a.y,b.x,b.y,8);
       }
     }
   }
 
-  ctx.fillStyle='rgba(255,255,255,0.25)'; // világosabb glow
+  // Glow pontok
   nodes.forEach(n=>{
+    ctx.fillStyle='rgba(255,255,255,0.3)';
     ctx.beginPath();
-    ctx.arc(n.x,n.y,3,0,Math.PI*2);
+    ctx.arc(n.x,n.y,4,0,Math.PI*2);
     ctx.fill();
   });
 
