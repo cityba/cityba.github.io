@@ -335,17 +335,17 @@ function draw(){
       const a=nodes[i], b=nodes[j];
       const d=Math.hypot(a.x-b.x,a.y-b.y);
       if(d<200){
-        ctx.strokeStyle=`rgba(88,166,255,${0.3 - d/600})`;
-        ctx.lineWidth=1+Math.random()*0.8;
+        ctx.strokeStyle=`rgba(255,255,255,${0.6 - d/400})`; // fehérebb, erősebb
+        ctx.lineWidth=1.5 + Math.random()*1.2;
         lightning(a.x,a.y,b.x,b.y,8);
       }
     }
   }
 
-  ctx.fillStyle='rgba(88,166,255,0.15)';
+  ctx.fillStyle='rgba(255,255,255,0.25)'; // világosabb glow
   nodes.forEach(n=>{
     ctx.beginPath();
-    ctx.arc(n.x,n.y,2.4,0,Math.PI*2);
+    ctx.arc(n.x,n.y,3,0,Math.PI*2);
     ctx.fill();
   });
 
