@@ -4,225 +4,291 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Szitányi András — Interactive Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
+/* ===== Alapértékek és színek ===== */
 :root {
-  --bg: #050913;
-  --card: #0f1720;
-  --accent: #58a6ff;
-  --muted: #94a3b8;
+    --bg: #030710; /* Mélyebb háttér */
+    --card: rgba(15, 23, 32, 0.4); /* Átlátszó kártya háttér */
+    --accent: #58a6ff;
+    --muted: #94a3b8;
+    --neon-green: #7FFF96; /* Enyhébb zöld neon */
+    --neon-blue: #58a6ff;
+    --text-color: #e6eef6;
 }
 html,body {
-  margin: 0;
-  height: 100%;
-  font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(circle at top, #0a1227 0%, #050913 100%);
-  color: #e6eef6;
-  overflow-x: hidden;
+    margin: 0;
+    height: 100%;
+    font-family: 'Share Tech Mono', monospace; /* Futurisztikusabb font */
+    background: radial-gradient(circle at top, #06102a 0%, #030710 100%); /* Mélyebb kék-fekete átmenet */
+    color: var(--text-color);
+    overflow-x: hidden;
 }
 .wrap {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 header {
-  width: 100%;
-  max-width: 1100px;
-  padding: 36px 20px;
-  box-sizing: border-box;
-  position: relative;
+    width: 100%;
+    max-width: 1100px;
+    padding: 36px 20px;
+    box-sizing: border-box;
+    position: relative;
 }
 
-/* ===== HERO ===== */
+/* ===== HERO - Új, ütősebb design ===== */
 .hero {
-  background: rgba(10,20,35,0.5);
-  border-radius: 18px;
-  padding: 28px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  box-shadow: 0 0 40px rgba(88,166,255,0.1);
-  overflow: hidden;
+    background: linear-gradient(135deg, rgba(10,20,35,0.4), rgba(15,25,40,0.4)); /* Fényesebb, átlátszóbb gradiens */
+    backdrop-filter: blur(8px); /* Üveghatás */
+    border-radius: 24px; /* Kerekebb sarkok */
+    padding: 32px; /* Nagyobb padding */
+    display: flex;
+    gap: 25px; /* Nagyobb rés */
+    align-items: center;
+    position: relative;
+    z-index: 10; /* Magasabb z-index */
+    box-shadow: 0 0 60px rgba(88,166,255,0.2), 0 0 10px rgba(127, 255, 150, 0.3); /* Kék és zöld fényeffekt */
+    overflow: hidden;
+    border: 1px solid rgba(var(--neon-blue), 0.3); /* Vékony neon keret */
 }
+.hero::before { /* Holografikus / rácshatás */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(var(--neon-blue), 0.05) 1px, rgba(var(--neon-blue), 0.05) 2px),
+        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(var(--neon-blue), 0.05) 1px, rgba(var(--neon-blue), 0.05) 2px);
+    background-size: 20px 20px;
+    opacity: 0.2;
+    z-index: -1;
+}
+
 .avatar {
-  width: 128px;
-  height: 128px;
-  border-radius: 16px;
-  background: linear-gradient(135deg,#0b2030,#122434);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: var(--accent);
-  font-size: 28px;
-  flex: 0 0 128px;
+    width: 140px; /* Nagyobb avatar */
+    height: 140px;
+    border-radius: 50%; /* Kerek avatar */
+    background: linear-gradient(135deg, #0b2030, #122434);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--neon-green); /* Neon zöld text */
+    font-size: 32px; /* Nagyobb font */
+    flex: 0 0 140px;
+    border: 2px solid var(--neon-green); /* Neon zöld keret */
+    box-shadow: 0 0 15px var(--neon-green); /* Fénylő árnyék */
 }
 .intro { flex: 1; }
-.intro h1 { margin: 0; font-size: 28px; color: var(--accent); }
-.intro p { margin: 6px 0; color: var(--muted); }
-.tagline { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.intro h1 { 
+    margin: 0; 
+    font-family: 'Orbitron', sans-serif; /* Másik font a címnek */
+    font-size: 42px; /* Még nagyobb cím */
+    color: var(--accent); 
+    text-shadow: 0 0 15px var(--neon-blue), 0 0 20px var(--neon-blue); /* Neon árnyék */
+    -webkit-text-stroke: 1px rgba(var(--neon-blue), 0.5); /* Vékony körvonal */
+    letter-spacing: 2px; /* Térköz a betűk között */
+}
+.intro p { margin: 8px 0; color: var(--muted); font-size: 16px; }
+.tagline { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
 .chip {
-  background: rgba(88,166,255,0.08);
-  border: 1px solid rgba(88,166,255,0.12);
-  padding: 6px 10px;
-  border-radius: 999px;
-  color: var(--accent);
-  font-weight: 600;
+    background: rgba(88,166,255,0.15); /* Átlátszóbb chip háttér */
+    border: 1px solid rgba(88,166,255,0.2);
+    padding: 8px 14px; /* Nagyobb padding */
+    border-radius: 999px;
+    color: var(--neon-green); /* Neon zöld */
+    font-weight: 600;
+    box-shadow: 0 0 5px rgba(127, 255, 150, 0.2); /* Kis neon árnyék */
 }
 
-/* ===== BUTTONS ===== */
+/* ===== BUTTONS - Futurisztikus design ===== */
 .btn {
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: linear-gradient(180deg,var(--accent),#3e8fe6);
-  color: #021422;
-  font-weight: 700;
-  text-decoration: none;
-  cursor: pointer;
+    display: inline-block;
+    padding: 12px 20px; /* Nagyobb padding */
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--neon-blue), #3e8fe6); /* Kék gradiens */
+    color: #021422;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(var(--neon-blue), 0.5); /* Fénylő effekt */
+    text-transform: uppercase; /* Nagybetűs */
+    letter-spacing: 1px;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(var(--neon-blue), 0.8), 0 0 5px rgba(255,255,255,0.5);
 }
 .btn.alt {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.06);
-  color: var(--accent);
+    background: transparent;
+    border: 2px solid var(--neon-green); /* Zöld neon keret */
+    color: var(--neon-green);
+    box-shadow: 0 0 10px rgba(var(--neon-green), 0.5);
+}
+.btn.alt:hover {
+    background: rgba(var(--neon-green), 0.1);
+    box-shadow: 0 0 20px rgba(var(--neon-green), 0.8), 0 0 5px rgba(255,255,255,0.5);
 }
 
 /* ===== MAIN GRID ===== */
 main {
-  width: 100%;
-  max-width: 1100px;
-  padding: 28px 20px;
-  box-sizing: border-box;
-  z-index: 1;
+    width: 100%;
+    max-width: 1100px;
+    padding: 28px 20px;
+    box-sizing: border-box;
+    z-index: 1;
 }
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px; /* Nagyobb rés */
 }
 .card {
-  background: var(--card);
-  padding: 18px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.03);
-  box-shadow: 0 6px 20px rgba(2,6,23,0.6);
-  transition: transform .2s ease;
+    background: var(--card); /* Átlátszó háttér */
+    backdrop-filter: blur(5px); /* Üveghatás */
+    padding: 22px; /* Nagyobb padding */
+    border-radius: 16px; /* Kerekebb sarkok */
+    border: 1px solid rgba(255,255,255,0.08); /* Finomabb keret */
+    box-shadow: 0 8px 30px rgba(2,6,23,0.8); /* Erősebb árnyék */
+    transition: transform .2s ease, box-shadow .2s ease;
+    position: relative;
+    overflow: hidden;
 }
-.card:hover { transform: translateY(-3px); }
-.card h3 { margin: 0 0 8px 0; color: var(--accent); }
-.muted { color: var(--muted); font-size: 14px; }
+.card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 12px 40px rgba(2,6,23,0.9), 0 0 15px rgba(var(--neon-blue), 0.3); /* Kék fény hoverkor */
+}
+.card h3 { 
+    margin: 0 0 10px 0; 
+    color: var(--neon-green); /* Neon zöld címek */
+    font-size: 22px;
+}
+.muted { color: var(--muted); font-size: 15px; }
 
 .snippet {
-  background: #001022;
-  border-radius: 10px;
-  padding: 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-  font-size: 13px;
-  color: #b9d6ff;
-  overflow: auto;
+    background: #001022;
+    border-radius: 10px;
+    padding: 15px; /* Nagyobb padding */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+    font-size: 14px;
+    color: #b9d6ff;
+    overflow: auto;
+    border: 1px solid rgba(var(--neon-blue), 0.2);
+    box-shadow: inset 0 0 8px rgba(var(--neon-blue), 0.1);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
 }
-.small { font-size: 13px; color: var(--muted); }
+.snippet:hover {
+    box-shadow: inset 0 0 15px rgba(var(--neon-blue), 0.3);
+}
+.small { font-size: 14px; color: var(--muted); }
 
-footer { padding: 20px; color: var(--muted); text-align: center; }
+footer { padding: 30px; color: var(--muted); text-align: center; font-size: 14px; }
 
 /* TABLE */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 15px;
 }
 th,td {
-  padding: 6px 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    text-align: left;
+    color: var(--text-color);
 }
+th { color: var(--neon-green); } /* Neon zöld táblázat fejlécek */
 
-/* ===== Lightning Canvas ===== */
+
+/* ===== Lightning Canvas - Az eredeti villám kód ===== */
 #scene {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
+    position: absolute; /* Abszolút pozícionálás */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* A tartalom alatt */
+    pointer-events: none;
+    /* A canvas nem a body-ra, hanem a hero dive-re kerül, így a 100% a hero méreteire vonatkozik */
 }
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <div class="hero">
-    <canvas id="scene"></canvas>
-    <div class="avatar">cityba</div>
-    <div class="intro">
-      <h1>Szitányi András</h1>
-      <p class="muted">Autodidakta full-stack fejlesztő — optimalizálás, automatizálás, egyedi megoldások</p>
-      <div class="tagline">
-        <div class="chip">PHP</div>
-        <div class="chip">JavaScript</div>
-        <div class="chip">Python</div>
-        <div class="chip">Shell</div>
-        <div class="chip">API</div>
-        <div class="chip">Remote</div>
-      </div>
-      <div style="margin-top:12px">
-        <a class="btn" id="hireBtn">Megbízást kérek</a>
-        <a class="btn alt" id="downloadCv">CV letöltés</a>
-      </div>
+    <div class="hero">
+        <canvas id="hero-scene"></canvas> 
+        <div class="avatar">cityba</div>
+        <div class="intro">
+            <h1>Szitányi András</h1>
+            <p class="muted">Autodidakta full-stack fejlesztő — optimalizálás, automatizálás, egyedi megoldások</p>
+            <div class="tagline">
+                <div class="chip">PHP</div>
+                <div class="chip">JavaScript</div>
+                <div class="chip">Python</div>
+                <div class="chip">Shell</div>
+                <div class="chip">API</div>
+                <div class="chip">Remote</div>
+            </div>
+            <div style="margin-top:20px">
+                <a class="btn" id="hireBtn">Megbízást kérek</a>
+                <a class="btn alt" id="downloadCv">CV letöltés</a>
+            </div>
+        </div>
     </div>
-  </div>
 </header>
 
 <main>
-  <div class="grid">
-    <div class="card" id="proj1">
-      <h3>Vérnyomás–pulzus logger</h3>
-      <div class="muted">Egészségadat naplózó app — backend + egyszerű frontend.</div>
-      <p class="small" style="margin-top:10px">Kódoptimalizálás, adatbázis, egyszerű vizualizáció.</p>
-    </div>
-    <div class="card" id="proj2">
-      <h3>Ügyfélkapus QR-auth</h3>
-      <div class="muted">QR visszaállítás és authentikációs demo.</div>
-      <p class="small" style="margin-top:10px">Biztonság, gyors generálás, validálás.</p>
-    </div>
-    <div class="card" id="proj3">
-      <h3>PowerShell fájlkereső</h3>
-      <div class="muted">Windows utility, gyors indexelés és keresés.</div>
-      <p class="small" style="margin-top:10px">CLI, teljesítmény, memóriaoptimalizálás.</p>
+    <div class="grid">
+        <div class="card" id="proj1">
+            <h3>Vérnyomás–pulzus logger</h3>
+            <div class="muted">Egészségadat naplózó app — backend + egyszerű frontend.</div>
+            <p class="small" style="margin-top:10px">Kódoptimalizálás, adatbázis, egyszerű vizualizáció.</p>
+        </div>
+        <div class="card" id="proj2">
+            <h3>Ügyfélkapus QR-auth</h3>
+            <div class="muted">QR visszaállítás és authentikációs demo.</div>
+            <p class="small" style="margin-top:10px">Biztonság, gyors generálás, validálás.</p>
+        </div>
+        <div class="card" id="proj3">
+            <h3>PowerShell fájlkereső</h3>
+            <div class="muted">Windows utility, gyors indexelés és keresés.</div>
+            <p class="small" style="margin-top:10px">CLI, teljesítmény, memóriaoptimalizálás.</p>
+        </div>
+
+        <div class="card">
+            <h3>CSV / Excel demo</h3>
+            <div class="muted">Tölts fel egy CSV fájlt, és mutatom hogyan dolgozom fel.</div>
+            <input type="file" id="csvFile" accept=".csv" style="margin-top:15px; padding: 8px; border-radius: 8px; border: 1px solid rgba(var(--neon-green), 0.3); background-color: rgba(0,0,0,0.2); color: var(--text-color);">
+            <div id="csvPreview" style="margin-top:12px;"></div>
+        </div>
+
+        <div class="card">
+            <h3>API demó (GitHub)</h3>
+            <div class="muted">Lekérdezem a GitHub publikus adataidat (repo száma, link).</div>
+            <button id="fetchGithub" class="btn" style="margin-top:15px;">Lekérdezés</button>
+            <div id="apiResult" style="margin-top:12px; color:var(--muted)"></div>
+        </div>
+
+        <div class="card">
+            <h3>Kód snippet</h3>
+            <div class="snippet" id="codeSnippet">// kattints ide a véletlenszerű kódokért</div>
+        </div>
     </div>
 
-    <div class="card">
-      <h3>CSV / Excel demo</h3>
-      <div class="muted">Tölts fel egy CSV fájlt, és mutatom hogyan dolgozom fel.</div>
-      <input type="file" id="csvFile" accept=".csv" style="margin-top:10px">
-      <div id="csvPreview" style="margin-top:12px"></div>
-    </div>
-
-    <div class="card">
-      <h3>API demó (GitHub)</h3>
-      <div class="muted">Lekérdezem a GitHub publikus adataidat (repo száma, link).</div>
-      <button id="fetchGithub" class="btn" style="margin-top:8px">Lekérdezés</button>
-      <div id="apiResult" style="margin-top:10px;color:var(--muted)"></div>
-    </div>
-
-    <div class="card">
-      <h3>Kód snippet</h3>
-      <div class="snippet" id="codeSnippet">// kattints ide a véletlenszerű kódokért</div>
-    </div>
-  </div>
-
-<section style="margin-top:28px">
-  <div class="card">
-    <h3>Kapcsolat & Megrendelés</h3>
-    <p class="muted">
-      Küldj üzenetet e-mailben: 
-      <a href="mailto:cityba@gmail.com" style="color:var(--accent);text-decoration:underline;">cityba@gmail.com</a>
-    </p>
-    <p class="muted">Cégként vállalok megbízásokat.</p>
-  </div>
-</section>
-
-
+    <section style="margin-top:40px">
+        <div class="card" id="contactForm"> <h3>Kapcsolat & Megrendelés</h3>
+            <p class="muted">
+                Küldj üzenetet e-mailben: 
+                <a href="mailto:cityba@gmail.com" style="color:var(--accent);text-decoration:underline;">cityba@gmail.com</a>
+            </p>
+            <p class="muted">Cégként vállalok megbízásokat.</p>
+        </div>
+    </section>
 </main>
 
 <footer>© Szitányi András • cityba.github.io</footer>
@@ -231,100 +297,111 @@ th,td {
 <script>
 // ===== Véletlen kódok =====
 const sampleCodes = [
-  "for(i=0;i<10;i++){console.log(i)}",
-  "SELECT id,name FROM users WHERE active=1 LIMIT 10;",
-  "def quick(x):\n  return sorted(x)",
-  "powershell -command \"Get-ChildItem -Recurse | Where-Object {...}\"",
-  "fetch('/api/data').then(r=>r.json()).then(console.log)"
+    "for(i=0;i<10;i++){console.log(i)}",
+    "SELECT id,name FROM users WHERE active=1 LIMIT 10;",
+    "def quick(x):\n  return sorted(x)",
+    "powershell -command \"Get-ChildItem -Recurse | Where-Object {...}\"",
+    "fetch('/api/data').then(r=>r.json()).then(console.log)"
 ];
 document.getElementById('codeSnippet').onclick = ()=>{
-  const pick = sampleCodes[Math.floor(Math.random()*sampleCodes.length)];
-  document.getElementById('codeSnippet').textContent = pick;
+    const pick = sampleCodes[Math.floor(Math.random()*sampleCodes.length)];
+    document.getElementById('codeSnippet').textContent = pick;
 };
 
 // ===== CSV feldolgozás =====
 document.getElementById('csvFile').addEventListener('change',e=>{
-  const f = e.target.files[0]; if(!f) return;
-  const r = new FileReader();
-  r.onload = evt => renderCSV(evt.target.result);
-  r.readAsText(f);
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = evt => renderCSV(evt.target.result);
+    r.readAsText(f);
 });
 function renderCSV(txt){
-  const rows = txt.split(/\r?\n/).filter(Boolean).map(r=>r.split(/,|;|\t/));
-  const tbl = document.createElement('table');
-  const tr = document.createElement('tr');
-  rows[0].forEach(h=>{const th=document.createElement('th');th.textContent=h;tr.appendChild(th)});
-  tbl.appendChild(tr);
-  for(let i=1;i<rows.length;i++){
-    const tr=document.createElement('tr');
-    rows[i].forEach(c=>{const td=document.createElement('td');td.textContent=c;tr.appendChild(td)});
-    tbl.appendChild(tr);
-  }
-  const prev=document.getElementById('csvPreview');
-  prev.innerHTML=''; prev.appendChild(tbl);
+    const rows = txt.split(/\r?\n/).filter(Boolean).map(r=>r.split(/,|;|\t/));
+    if (rows.length === 0) return;
+
+    const tbl = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // Fejléc
+    const headerRow = document.createElement('tr');
+    rows[0].forEach(h=>{const th=document.createElement('th');th.textContent=h;headerRow.appendChild(th)});
+    thead.appendChild(headerRow);
+    tbl.appendChild(thead);
+
+    // Adatok
+    for(let i=1;i<rows.length;i++){
+        const tr=document.createElement('tr');
+        rows[i].forEach(c=>{const td=document.createElement('td');td.textContent=c;tr.appendChild(td)});
+        tbody.appendChild(tr);
+    }
+    tbl.appendChild(tbody);
+
+    const prev=document.getElementById('csvPreview');
+    prev.innerHTML=''; prev.appendChild(tbl);
 }
 
 // ===== GitHub API =====
 document.getElementById('fetchGithub').onclick = async ()=>{
-  const out = document.getElementById('apiResult');
-  out.textContent = 'Lekérdezés...';
-  try {
-    const res = await fetch('https://api.github.com/users/cityba');
-    const js = await res.json();
-    out.innerHTML = `Repos: <strong>${js.public_repos}</strong> • <a href="${js.html_url}" target="_blank">GitHub</a>`;
-  } catch(err){
-    out.textContent = 'Hiba: ' + err;
-  }
+    const out = document.getElementById('apiResult');
+    out.textContent = 'Lekérdezés...';
+    try {
+        const res = await fetch('https://api.github.com/users/cityba');
+        const js = await res.json();
+        out.innerHTML = `Repos: <strong>${js.public_repos}</strong> • <a href="${js.html_url}" target="_blank" style="color:var(--accent); text-decoration: underline;">GitHub</a>`;
+    } catch(err){
+        out.textContent = 'Hiba: ' + err;
+    }
 };
 
 // ===== CV generálás =====
 document.getElementById('downloadCv').onclick = ()=>{
-  const txt = `Szitányi András\nAutodidakta fejlesztő\nTech: PHP, JS, Python, Shell, MySQL\nProjektek: logger app, QR-auth, kereső`;
-  const blob = new Blob([txt], {type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Szitanyi_Andras_CV.txt';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
+    const txt = `Szitányi András\nAutodidakta fejlesztő\nTech: PHP, JS, Python, Shell, MySQL\nProjektek: logger app, QR-auth, kereső`;
+    const blob = new Blob([txt], {type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Szitanyi_Andras_CV.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
 };
 
 // ===== Scroll hire =====
 document.getElementById('hireBtn').onclick = ()=>{
-  document.getElementById('contactForm').scrollIntoView({behavior:'smooth'});
+    document.getElementById('contactForm').scrollIntoView({behavior:'smooth'});
 };
 
 // ===== Villám canvas =====
-
-const bodyDiv = document.body;
-const cvs = document.createElement('canvas');
-cvs.id = 'scene';
-cvs.style.position = 'fixed';
-cvs.style.top = '0';
-cvs.style.left = '0';
-cvs.style.width = '100%';
-cvs.style.height = '100%';
-cvs.style.zIndex = '0';
-cvs.style.pointerEvents = 'none';
-bodyDiv.prepend(cvs);
-
+// A canvas már a HTML-ben definiálva van a "hero" elemen belül
+const cvs = document.getElementById('hero-scene'); // A canvas ID-ja most hero-scene
 const ctx = cvs.getContext('2d');
-const resize = () => { cvs.width = window.innerWidth; cvs.height = window.innerHeight; };
-window.addEventListener('resize', resize);
-resize();
+
+const resizeCanvas = () => { 
+    cvs.width = cvs.offsetWidth; 
+    cvs.height = cvs.offsetHeight;
+    // Újra inicializáljuk a pontokat, hogy ne menjenek ki a canvasból méretezéskor
+    nodes.forEach(n => {
+        n.x = Math.random() * cvs.width;
+        n.y = Math.random() * cvs.height;
+    });
+};
+window.addEventListener('resize', resizeCanvas);
+// Kezdeti méretezés, miután a DOM elkészült és a hero div mérete beállt
+setTimeout(resizeCanvas, 0);
+
 
 const nodes = [];
-const NODE_COUNT = 15; // Pontok száma
-const MAX_DIST = 400; // Maximális távolság az összekötéshez
-const MIN_DIST = 100; // Ezen a távolságon belül a legerősebb a fény
+const NODE_COUNT = 15; 
+const MAX_DIST = 400; 
+const MIN_DIST = 100; 
 const SPEED = 0.6; 
 
-// Pontok (nodes) inicializálása
+// Fontos: a nodes tömböt itt inicializáljuk először
 for (let i = 0; i < NODE_COUNT; i++) {
     nodes.push({
-        x: Math.random() * cvs.width,
+        x: Math.random() * cvs.width, // cvs.width/height lehet, hogy 0 még
         y: Math.random() * cvs.height,
         vx: (Math.random() - 0.5) * SPEED,
         vy: (Math.random() - 0.5) * SPEED
@@ -333,19 +410,12 @@ for (let i = 0; i < NODE_COUNT; i++) {
 
 /**
  * Villámvonal rajzolása fraktálos elven
- * @param {number} x1 - Kezdő X
- * @param {number} y1 - Kezdő Y
- * @param {number} x2 - Vég X
- * @param {number} y2 - Vég Y
- * @param {number} segments - Töréspontok száma
- * @param {number} displace - Elmozdulás mértéke
  */
 function lightning(x1, y1, x2, y2, segments = 8, displace = 20) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     for (let i = 1; i < segments; i++) {
         const t = i / segments;
-        // Töréspontok generálása
         const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * displace;
         const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * displace;
         ctx.lineTo(x, y);
@@ -373,33 +443,26 @@ function draw() {
             const a = nodes[i], b = nodes[j];
             const d = Math.hypot(a.x - b.x, a.y - b.y);
 
-            // Csak ha a maximális távolságon belül vannak
             if (d < MAX_DIST) {
-                
-                // Intenzitás kiszámítása: Közeli pontok = 1.0 (max), távoli pontok = 0.0
                 const intensity = Math.max(0, 1 - (d - MIN_DIST) / (MAX_DIST - MIN_DIST));
                 
-                // Villám színének és vastagságának beállítása
-                const alpha = intensity * 0.8; // Átlátszóság
+                const alpha = intensity * 0.8;
                 ctx.strokeStyle = `rgba(127, 255, 150, ${alpha})`;
-                ctx.lineWidth = 1 + intensity * 2; // Vastagság: 1-től 3-ig
+                ctx.lineWidth = 1 + intensity * 2;
                 
-                // Erőteljes utófény a villámvonal körül
-                ctx.shadowBlur = 10 + intensity * 20; // Közeli erősebb
+                ctx.shadowBlur = 10 + intensity * 20; 
                 ctx.shadowColor = `rgba(127, 255, 150, ${intensity})`;
 
-                lightning(a.x, a.y, b.x, b.y, 8, 20 * (1 - intensity)); // Rövid villámoknál kisebb elmozdulás
+                lightning(a.x, a.y, b.x, b.y, 8, 20 * (1 - intensity)); 
 
-                // Árnyék visszaállítása
                 ctx.shadowBlur = 0;
                 ctx.shadowColor = 'transparent';
             }
         }
     }
     
-    // Fénylő pontok rajzolása (melyekből a villámok indulnak)
+    // Fénylő pontok rajzolása
     nodes.forEach(n => {
-        // Erős fény a pont körül
         ctx.shadowBlur = 10;
         ctx.shadowColor = 'rgba(127, 255, 150, 1)';
         ctx.fillStyle = 'rgba(127, 255, 150, 0.8)';
@@ -407,16 +470,13 @@ function draw() {
         ctx.arc(n.x, n.y, 3, 0, Math.PI * 2);
         ctx.fill();
         
-        // Visszaállítás
         ctx.shadowBlur = 0;
         ctx.shadowColor = 'transparent';
     });
 
-
     requestAnimationFrame(draw);
 }
 draw();
-  
 </script>
 </body>
 </html>
