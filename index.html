@@ -1,215 +1,194 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Szitányi András — Interactive Portfolio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Szitányi András – Interaktív Portfólió</title>
   <style>
-    :root{--bg:#071024;--card:#0f1720;--accent:#58a6ff;--muted:#94a3b8}
-    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,var(--bg),#071726);color:#e6eef6}
-    .wrap{min-height:100%;display:flex;flex-direction:column;align-items:center}
-    header{width:100%;max-width:1100px;padding:36px 20px;box-sizing:border-box;position:relative}
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #0c0f16 0%, #07080c 100%);
+      color: #e6edf3;
+      overflow-x: hidden;
+    }
+    header {
+      position: relative;
+      height: 320px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      background: linear-gradient(135deg, #081229, #101b33 50%, #0c0f16);
+    }
+    h1 {
+      font-size: 3em;
+      color: #58a6ff;
+      margin-bottom: 0.3em;
+      z-index: 2;
+    }
+    h3 {
+      font-weight: 400;
+      color: #9ba3af;
+      z-index: 2;
+    }
 
-    /* Interactive hero */
-    .hero{background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);border-radius:18px;padding:28px;display:flex;gap:20px;align-items:center}
-    .avatar{width:128px;height:128px;border-radius:16px;background:linear-gradient(135deg,#0b2030,#122434);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:28px;flex:0 0 128px}
-    .intro{flex:1}
-    .intro h1{margin:0;font-size:28px;color:var(--accent)}
-    .intro p{margin:6px 0;color:var(--muted)}
-    .tagline{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-    .chip{background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.12);padding:6px 10px;border-radius:999px;color:var(--accent);font-weight:600}
+    canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
 
-    /* canvas for floating code panels */
-    #scene{position:absolute;right:24px;top:18px;width:420px;height:180px;border-radius:12px;overflow:hidden;pointer-events:none}
+    section {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
 
-    main{width:100%;max-width:1100px;padding:28px 20px;box-sizing:border-box}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 6px 20px rgba(2,6,23,0.6)}
-    .card h3{margin:0 0 8px 0;color:var(--accent)}
-    .muted{color:var(--muted);font-size:14px}
-    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:linear-gradient(180deg,var(--accent),#3e8fe6);color:#021422;font-weight:700;text-decoration:none}
+    h2 {
+      border-left: 4px solid #58a6ff;
+      padding-left: 10px;
+      color: #58a6ff;
+      margin-bottom: 20px;
+    }
 
-    /* responsive */
-    @media (max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}#scene{display:none}}
-    @media (max-width:600px){.grid{grid-template-columns:1fr}.avatar{display:none}.hero{flex-direction:column;gap:12px}header{padding:20px}}
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 20px 25px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #58a6ff;
+    }
 
-    /* code snippet style */
-    .snippet{background:#001022;border-radius:10px;padding:12px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;font-size:13px;color:#b9d6ff;overflow:auto}
-    .small{font-size:13px;color:var(--muted)}
+    .skills span {
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.2);
+      color: #58a6ff;
+      padding: 6px 12px;
+      margin: 4px;
+      border-radius: 12px;
+      display: inline-block;
+      font-size: 0.9em;
+      transition: 0.2s;
+    }
+    .skills span:hover { background: #58a6ff; color: #0d1117; }
 
-    /* floating chips animation helper */
-    .float-legend{position:absolute;left:16px;bottom:14px;color:var(--muted);font-size:12px}
-
-    /* table for CSV preview */
-    table{width:100%;border-collapse:collapse;font-size:13px}
-    th,td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+    footer {
+      margin: 80px 0 30px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #8b949e;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="hero">
-        <div class="avatar">cityba</div>
-        <div class="intro">
-          <h1>Szitányi András</h1>
-          <p class="muted">Autodidakta full-stack fejlesztő — optimalizálás, automatizálás, egyedi megoldások</p>
-          <div class="tagline">
-            <div class="chip">PHP</div>
-            <div class="chip">JavaScript</div>
-            <div class="chip">Python</div>
-            <div class="chip">Shell</div>
-            <div class="chip">API</div>
-            <div class="chip">Remote</div>
-          </div>
-          <div style="margin-top:12px">
-            <a class="btn" id="hireBtn">Megbízást kérek</a>
-            <a class="btn" id="downloadCv" style="margin-left:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">CV letöltés</a>
-          </div>
-        </div>
-        <div id="scene"></div>
-      </div>
-      <div class="float-legend">Kattints a kártyákra — próbáld ki a CSV feltöltést és az API-demót.</div>
-    </header>
+  <header>
+    <canvas id="lightCanvas"></canvas>
+    <h1>Szitányi András</h1>
+    <h3>Autodidakta Full-Stack Fejlesztő ⚡</h3>
+    <p>PHP • JavaScript • Python • API • Automatizálás • Egyedi megoldások</p>
+  </header>
 
-    <main>
-      <div class="grid">
-        <div class="card" id="proj1">
-          <h3>Vérnyomás–pulzus logger</h3>
-          <div class="muted">Egészségadat naplózó app — backend + egyszerű frontend.</div>
-          <p class="small" style="margin-top:10px">Kódoptimalizálás, adatbázis, egyszerű vizualizáció.</p>
-        </div>
+  <section>
+    <h2>🎯 Projektek</h2>
+    <div class="card">
+      <strong>🩺 Vérnyomás–pulzus logger app</strong>
+      <p>Egészségadat-naplózó alkalmazás saját backend-rendszerrel.</p>
+    </div>
+    <div class="card">
+      <strong>🔐 Ügyfélkapus QR-authentikátor</strong>
+      <p>QR-kód visszafejtő és újrageneráló biztonsági authentikátor modul.</p>
+    </div>
+    <div class="card">
+      <strong>⚡ PowerShell fájlkereső</strong>
+      <p>Gyors, optimalizált kereső-utility Windows környezetre.</p>
+    </div>
+  </section>
 
-        <div class="card" id="proj2">
-          <h3>Ügyfélkapus QR-auth</h3>
-          <div class="muted">QR visszaállítás és authentikációs demo.</div>
-          <p class="small" style="margin-top:10px">Biztonság, gyors generálás, validálás.</p>
-        </div>
+  <section>
+    <h2>💡 Technológiák</h2>
+    <div class="skills">
+      <span>PHP</span><span>JavaScript</span><span>Python</span><span>MySQL</span>
+      <span>Shell</span><span>API</span><span>HTML</span><span>CSS</span>
+      <span>Automation</span><span>Optimization</span>
+    </div>
+  </section>
 
-        <div class="card" id="proj3">
-          <h3>PowerShell fájlkereső</h3>
-          <div class="muted">Windows utility, gyors indexelés és keresés.</div>
-          <p class="small" style="margin-top:10px">CLI, teljesítmény, memóriaoptimalizálás.</p>
-        </div>
+  <section>
+    <h2>📬 Kapcsolat</h2>
+    <div class="card">
+      <p>📧 <a href="mailto:cityba@gmail.com">cityba@gmail.com</a><br>
+      🔗 <a href="https://github.com/cityba" target="_blank">GitHub</a> |
+      <a href="https://www.linkedin.com/in/szit%C3%A1nyi-andr%C3%A1s-071a97371/" target="_blank">LinkedIn</a></p>
+    </div>
+  </section>
 
-        <div class="card">
-          <h3>CSV / Excel demo</h3>
-          <div class="muted">Tölts fel egy CSV fájlt, és mutatom hogyan dolgozom fel.</div>
-          <input type="file" id="csvFile" accept=".csv" style="margin-top:10px">
-          <div id="csvPreview" style="margin-top:12px"></div>
-        </div>
-
-        <div class="card">
-          <h3>API demó (GitHub)</h3>
-          <div class="muted">Lekérdezem a GitHub publikus adataidat (repo száma, link).</div>
-          <button id="fetchGithub" class="btn" style="margin-top:8px">Lekérdezés</button>
-          <div id="apiResult" style="margin-top:10px;color:var(--muted)"></div>
-        </div>
-
-        <div class="card">
-          <h3>Kód snippet</h3>
-          <div class="snippet" id="codeSnippet">// kattints ide a véletlenszerű kódokért</div>
-        </div>
-      </div>
-
-      <section style="margin-top:28px">
-        <div class="card">
-          <h3>Kapcsolat & Megrendelés</h3>
-          <p class="muted">Küldj üzenetet, vagy töltsd le a CV-t — cégként vállalok megbízásokat.</p>
-          <form id="contactForm" action="https://formsubmit.co/cityba@gmail.com" method="POST">
-            <input type="hidden" name="_subject" value="Új megbízás – cityba oldalról">
-            <input type="text" name="name" placeholder="Név" required style="padding:8px;width:48%;margin-right:4%;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit"><input type="email" name="email" placeholder="Email" required style="padding:8px;width:48%;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
-            <textarea name="message" placeholder="Rövid leírás a megbízásról" required style="display:block;width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" rows="4"></textarea>
-            <button class="btn" type="submit" style="margin-top:10px">Küldés</button>
-          </form>
-        </div>
-      </section>
-
-    </main>
-
-    <footer style="padding:20px;color:var(--muted)">© Szitányi András • cityba.github.io</footer>
-  </div>
+  <footer>© 2025 Szita Team Kft | cityba.github.io</footer>
 
   <script>
-    // Floating code panels in #scene
-    const scene = document.getElementById('scene');
-    const cvs = document.createElement('canvas');
-    cvs.width = 420; cvs.height = 180; scene.appendChild(cvs);
-    const ctx = cvs.getContext('2d');
-    const panels = [];
-    const sampleCodes = [
-      "for(i=0;i<10;i++){console.log(i)}",
-      "SELECT id,name FROM users WHERE active=1 LIMIT 10;",
-      "def quick(x):\n  return sorted(x)",
-      "powershell -command \"Get-ChildItem -Recurse | Where-Object {...}\""
-    ];
-    function rand(min,max){return Math.random()*(max-min)+min}
-    for(let i=0;i<6;i++){panels.push({x:rand(10,360),y:rand(10,140),vx:rand(-0.3,0.3),vy:rand(-0.2,0.2),w:rand(110,160),h:rand(40,70),txt:sampleCodes[i%sampleCodes.length]})}
-    function draw(){ctx.clearRect(0,0,cvs.width,cvs.height);
-      panels.forEach(p=>{
-        p.x += p.vx; p.y += p.vy;
-        if(p.x<0||p.x+p.w>cvs.width) p.vx *= -1;
-        if(p.y<0||p.y+p.h>cvs.height) p.vy *= -1;
-        // shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(p.x+6,p.y+6,p.w,p.h);
-        // card
-        ctx.fillStyle = 'rgba(2,10,20,0.95)'; ctx.fillRect(p.x,p.y,p.w,p.h);
-        ctx.strokeStyle = 'rgba(88,166,255,0.12)'; ctx.strokeRect(p.x+0.5,p.y+0.5,p.w-1,p.h-1);
-        ctx.fillStyle = '#9fc9ff'; ctx.font='11px ui-monospace,monospace'; wrapText(ctx,p.txt,p.x+10,p.y+18, p.w-18,14)
-      })
-      requestAnimationFrame(draw)
+    const canvas = document.getElementById('lightCanvas');
+    const ctx = canvas.getContext('2d');
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = document.querySelector('header').offsetHeight;
     }
-    function wrapText(ctx,text,x,y,maxWidth,lineHeight){
-      const words = text.split(/\s+/); let line='';
-      for(let n=0;n<words.length;n++){const testLine=line+words[n]+' ';const metrics=ctx.measureText(testLine);if(metrics.width>maxWidth&&n>0){ctx.fillText(line,x,y);line=words[n]+' ';y+=lineHeight;}else{line=testLine}}ctx.fillText(line,x,y)}
+    window.addEventListener('resize', resize);
+    resize();
+
+    const points = Array.from({ length: 8 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h / 1.5,
+      dx: (Math.random() - 0.5) * 1.2,
+      dy: (Math.random() - 0.5) * 1.2
+    }));
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      ctx.beginPath();
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > w) p.dx *= -1;
+        if (p.y < 0 || p.y > h) p.dy *= -1;
+      }
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i], p2 = points[i + 1];
+        ctx.strokeStyle = `rgba(88,166,255,${0.4 + Math.random() * 0.6})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.shadowColor = '#58a6ff';
+        ctx.shadowBlur = 8 + Math.random() * 12;
+        ctx.stroke();
+        // Villámágak
+        const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 20;
+        const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 20;
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.lineTo(midX, midY);
+        ctx.lineTo(p2.x, p2.y);
+        ctx.strokeStyle = `rgba(88,166,255,${Math.random()})`;
+        ctx.lineWidth = 1.2;
+        ctx.shadowBlur = 15;
+        ctx.stroke();
+      }
+      requestAnimationFrame(draw);
+    }
     draw();
-
-    // CSV parse demo
-    document.getElementById('csvFile').addEventListener('change',e=>{
-      const f = e.target.files[0]; if(!f) return; const reader = new FileReader();
-      reader.onload = evt => {const text = evt.target.result; renderCSV(text)}; reader.readAsText(f)
-    });
-    function renderCSV(text){ const rows = text.split(/\r?\n/).filter(Boolean).map(r=>r.split(/,|;|\t/));
-      const tbl = document.createElement('table');
-      const thead = document.createElement('tr'); rows[0].forEach(h=>{const th=document.createElement('th');th.textContent=h;thead.appendChild(th)}); tbl.appendChild(thead);
-      for(let i=1;i<rows.length;i++){const tr=document.createElement('tr');rows[i].forEach(c=>{const td=document.createElement('td');td.textContent=c;tr.appendChild(td)});tbl.appendChild(tr)}
-      const preview = document.getElementById('csvPreview'); preview.innerHTML=''; preview.appendChild(tbl)
-    }
-
-    // API demo - GitHub
-    document.getElementById('fetchGithub').addEventListener('click',async ()=>{
-      const out = document.getElementById('apiResult'); out.textContent='Lekérdezés...';
-      try{ const res = await fetch('https://api.github.com/users/cityba'); if(!res.ok) throw new Error(res.status);
-        const js = await res.json(); out.innerHTML = `Repos: <strong>${js.public_repos}</strong> • <a href="${js.html_url}" target="_blank">GitHub</a>`;
-      }catch(err){ out.textContent='Hiba: ' + err }
-    })
-
-    // Code snippet randomizer
-    const codeBox = document.getElementById('codeSnippet'); codeBox.addEventListener('click',()=>{
-      const pick = sampleCodes[Math.floor(Math.random()*sampleCodes.length)]; codeBox.textContent = pick;
-    });
-
-    // Project card clicks show small demo overlay
-    document.querySelectorAll('#proj1,#proj2,#proj3').forEach(el=>el.addEventListener('click',()=>{
-      showPopup(el.querySelector('h3').innerText);
-    }))
-    function showPopup(title){
-      const modal = document.createElement('div'); modal.style.position='fixed';modal.style.left=0;modal.style.top=0;modal.style.right=0;modal.style.bottom=0;modal.style.background='rgba(0,0,0,0.6)';modal.style.display='flex';modal.style.alignItems='center';modal.style.justifyContent='center';modal.style.zIndex=9999;
-      const box = document.createElement('div'); box.style.width='90%';box.style.maxWidth='760px';box.style.background='#071726';box.style.border='1px solid rgba(255,255,255,0.03)';box.style.borderRadius='12px';box.style.padding='18px';
-      box.innerHTML = `<h3 style="color:var(--accent);margin-top:0">${title}</h3><pre class='snippet'>console.log('Demo: ${title}')</pre><p class='muted'>Ez egy rövid bemutató. Kérj élő demót vagy hozzáférést a GitHub repo-hoz.</p><div style='text-align:right'><button id='closeBtn' class='btn'>Bezár</button></div>`;
-      modal.appendChild(box); document.body.appendChild(modal);
-      document.getElementById('closeBtn').addEventListener('click',()=>document.body.removeChild(modal))
-    }
-
-    // Hire button -> scroll to contact
-    document.getElementById('hireBtn').addEventListener('click',()=>{document.getElementById('csvFile').scrollIntoView({behavior:'smooth'})})
-
-    // Download CV -> generate a tiny PDF-like blob (simple text) or link to file
-    document.getElementById('downloadCv').addEventListener('click',()=>{
-      const cv = `Szitányi András\nAutodidakta fejlesztő\nTechnológiák: PHP, JS, Python, Shell, MySQL\nProjektek: logger app, QR-auth, PowerShell kereső`;
-      const blob = new Blob([cv],{type:'text/plain'}); const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='Szitanyi_Andras_CV.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    })
-
   </script>
 </body>
 </html>
