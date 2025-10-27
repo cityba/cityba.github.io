@@ -3,226 +3,187 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Szitányi András — Interactive Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Szitányi András — Interactive Portfolio (2025)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* ===== Alapértékek és színek ===== */
+/* ===== Alapértékek és színek (Modern 2025) ===== */
 :root {
-    --bg: #030710; /* Mélyebb háttér */
-    --card: rgba(15, 23, 32, 0.4); /* Átlátszó kártya háttér */
-    --accent: #58a6ff;
-    --muted: #94a3b8;
-    --neon-green: #7FFF96; /* Enyhébb zöld neon */
-    --neon-blue: #58a6ff;
-    --text-color: #e6eef6;
+    --bg-dark: #070e1a; /* Nagyon sötét háttér */
+    --card-bg: rgba(18, 30, 42, 0.4); /* Átlátszó kártya háttér */
+    --accent-blue: #58a6ff;
+    --accent-green: #38ee7f; /* Friss zöld kiemelés */
+    --text-light: #e6eef6;
+    --text-muted: #aab8c8;
 }
+
 html,body {
     margin: 0;
     height: 100%;
-    font-family: 'Share Tech Mono', monospace; /* Futurisztikusabb font */
-    background: radial-gradient(circle at top, #06102a 0%, #030710 100%); /* Mélyebb kék-fekete átmenet */
-    color: var(--text-color);
+    font-family: 'Inter', sans-serif; /* Tiszta, modern font */
+    background: radial-gradient(circle at top, #0c1c38 0%, var(--bg-dark) 100%); /* Mély, modern kék átmenet */
+    color: var(--text-light);
     overflow-x: hidden;
 }
+
+/* ===== CANVAS a teljes oldalra (FIXED) ===== */
+#scene {
+    position: fixed; /* Fix pozíció, teljes oldalt lefed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; 
+    pointer-events: none;
+    opacity: 0.8; /* Enyhén átlátszó, hogy ne nyomja el a tartalmat */
+}
+
 .wrap {
     min-height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    z-index: 1; /* A tartalom legyen a canvas felett */
 }
 header {
     width: 100%;
     max-width: 1100px;
-    padding: 36px 20px;
+    padding: 40px 20px;
     box-sizing: border-box;
-    position: relative;
 }
 
-/* ===== HERO - Új, ütősebb design ===== */
+/* ===== HERO (Glassmorphism) ===== */
 .hero {
-    background: linear-gradient(135deg, rgba(10,20,35,0.4), rgba(15,25,40,0.4)); /* Fényesebb, átlátszóbb gradiens */
-    backdrop-filter: blur(8px); /* Üveghatás */
-    border-radius: 24px; /* Kerekebb sarkok */
-    padding: 32px; /* Nagyobb padding */
+    background: var(--card-bg);
+    backdrop-filter: blur(10px); /* Modern üveghatás */
+    border-radius: 20px; 
+    padding: 36px; 
     display: flex;
-    gap: 25px; /* Nagyobb rés */
+    gap: 24px;
     align-items: center;
-    position: relative;
-    z-index: 10; /* Magasabb z-index */
-    box-shadow: 0 0 60px rgba(88,166,255,0.2), 0 0 10px rgba(127, 255, 150, 0.3); /* Kék és zöld fényeffekt */
-    overflow: hidden;
-    border: 1px solid rgba(var(--neon-blue), 0.3); /* Vékony neon keret */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 40px rgba(88,166,255,0.1); /* Mély árnyék + finom glow */
+    border: 1px solid rgba(255,255,255,0.08); /* Finom él */
 }
-.hero::before { /* Holografikus / rácshatás */
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: 
-        repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(var(--neon-blue), 0.05) 1px, rgba(var(--neon-blue), 0.05) 2px),
-        repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(var(--neon-blue), 0.05) 1px, rgba(var(--neon-blue), 0.05) 2px);
-    background-size: 20px 20px;
-    opacity: 0.2;
-    z-index: -1;
-}
-
 .avatar {
-    width: 140px; /* Nagyobb avatar */
-    height: 140px;
-    border-radius: 50%; /* Kerek avatar */
-    background: linear-gradient(135deg, #0b2030, #122434);
+    width: 120px;
+    height: 120px;
+    border-radius: 18px; 
+    background: linear-gradient(135deg,#1c3042,#2a425a);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    color: var(--neon-green); /* Neon zöld text */
-    font-size: 32px; /* Nagyobb font */
-    flex: 0 0 140px;
-    border: 2px solid var(--neon-green); /* Neon zöld keret */
-    box-shadow: 0 0 15px var(--neon-green); /* Fénylő árnyék */
+    font-weight: 800;
+    color: var(--accent-green);
+    font-size: 24px;
+    flex: 0 0 120px;
+    box-shadow: 0 0 15px rgba(56, 238, 127, 0.4);
 }
-.intro { flex: 1; }
 .intro h1 { 
     margin: 0; 
-    font-family: 'Orbitron', sans-serif; /* Másik font a címnek */
-    font-size: 42px; /* Még nagyobb cím */
-    color: var(--accent); 
-    text-shadow: 0 0 15px var(--neon-blue), 0 0 20px var(--neon-blue); /* Neon árnyék */
-    -webkit-text-stroke: 1px rgba(var(--neon-blue), 0.5); /* Vékony körvonal */
-    letter-spacing: 2px; /* Térköz a betűk között */
+    font-size: 36px; 
+    color: var(--accent-blue); 
+    font-weight: 800;
 }
-.intro p { margin: 8px 0; color: var(--muted); font-size: 16px; }
+.intro p { margin: 8px 0; color: var(--text-muted); font-size: 16px; }
 .tagline { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
 .chip {
-    background: rgba(88,166,255,0.15); /* Átlátszóbb chip háttér */
+    background: rgba(88,166,255,0.1); 
     border: 1px solid rgba(88,166,255,0.2);
-    padding: 8px 14px; /* Nagyobb padding */
+    padding: 8px 14px;
     border-radius: 999px;
-    color: var(--neon-green); /* Neon zöld */
+    color: var(--accent-green);
     font-weight: 600;
-    box-shadow: 0 0 5px rgba(127, 255, 150, 0.2); /* Kis neon árnyék */
+    font-size: 14px;
 }
 
-/* ===== BUTTONS - Futurisztikus design ===== */
+/* ===== BUTTONS (Minimalista) ===== */
 .btn {
     display: inline-block;
-    padding: 12px 20px; /* Nagyobb padding */
-    border-radius: 12px;
-    background: linear-gradient(180deg, var(--neon-blue), #3e8fe6); /* Kék gradiens */
-    color: #021422;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: var(--accent-blue);
+    color: var(--bg-dark); 
     font-weight: 700;
     text-decoration: none;
     cursor: pointer;
     border: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(var(--neon-blue), 0.5); /* Fénylő effekt */
-    text-transform: uppercase; /* Nagybetűs */
-    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(88,166,255,0.3);
 }
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(var(--neon-blue), 0.8), 0 0 5px rgba(255,255,255,0.5);
-}
+.btn:hover { transform: translateY(-1px); background: #79baff; box-shadow: 0 6px 20px rgba(88,166,255,0.5); }
 .btn.alt {
     background: transparent;
-    border: 2px solid var(--neon-green); /* Zöld neon keret */
-    color: var(--neon-green);
-    box-shadow: 0 0 10px rgba(var(--neon-green), 0.5);
+    border: 1px solid var(--text-muted);
+    color: var(--accent-blue);
+    box-shadow: none;
 }
 .btn.alt:hover {
-    background: rgba(var(--neon-green), 0.1);
-    box-shadow: 0 0 20px rgba(var(--neon-green), 0.8), 0 0 5px rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.05);
+    border-color: var(--accent-blue);
 }
 
-/* ===== MAIN GRID ===== */
+/* ===== MAIN GRID (Glassmorphism) ===== */
 main {
     width: 100%;
     max-width: 1100px;
-    padding: 28px 20px;
+    padding: 30px 20px;
     box-sizing: border-box;
     z-index: 1;
 }
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px; /* Nagyobb rés */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
 }
 .card {
-    background: var(--card); /* Átlátszó háttér */
-    backdrop-filter: blur(5px); /* Üveghatás */
-    padding: 22px; /* Nagyobb padding */
-    border-radius: 16px; /* Kerekebb sarkok */
-    border: 1px solid rgba(255,255,255,0.08); /* Finomabb keret */
-    box-shadow: 0 8px 30px rgba(2,6,23,0.8); /* Erősebb árnyék */
-    transition: transform .2s ease, box-shadow .2s ease;
-    position: relative;
-    overflow: hidden;
+    background: var(--card-bg); /* Átlátszó háttér */
+    backdrop-filter: blur(10px); /* Üveghatás */
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    transition: transform .3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow .3s ease;
 }
 .card:hover { 
     transform: translateY(-5px); 
-    box-shadow: 0 12px 40px rgba(2,6,23,0.9), 0 0 15px rgba(var(--neon-blue), 0.3); /* Kék fény hoverkor */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 20px rgba(56, 238, 127, 0.2); /* Zöld glow hoverkor */
 }
-.card h3 { 
-    margin: 0 0 10px 0; 
-    color: var(--neon-green); /* Neon zöld címek */
-    font-size: 22px;
-}
-.muted { color: var(--muted); font-size: 15px; }
+.card h3 { margin: 0 0 10px 0; color: var(--accent-green); font-size: 22px; font-weight: 700; }
+.muted { color: var(--text-muted); font-size: 15px; }
 
 .snippet {
-    background: #001022;
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
-    padding: 15px; /* Nagyobb padding */
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+    padding: 15px;
+    font-family: 'Share Tech Mono', monospace; /* Monospace kódokhoz */
     font-size: 14px;
     color: #b9d6ff;
     overflow: auto;
-    border: 1px solid rgba(var(--neon-blue), 0.2);
-    box-shadow: inset 0 0 8px rgba(var(--neon-blue), 0.1);
+    border: 1px solid rgba(56, 238, 127, 0.2);
     cursor: pointer;
-    transition: box-shadow 0.2s ease;
 }
-.snippet:hover {
-    box-shadow: inset 0 0 15px rgba(var(--neon-blue), 0.3);
-}
-.small { font-size: 14px; color: var(--muted); }
 
-footer { padding: 30px; color: var(--muted); text-align: center; font-size: 14px; }
+footer { padding: 40px; color: var(--text-muted); text-align: center; font-size: 14px; }
 
-/* TABLE */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    margin-top: 15px;
-}
-th,td {
-    padding: 8px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    text-align: left;
-    color: var(--text-color);
-}
-th { color: var(--neon-green); } /* Neon zöld táblázat fejlécek */
+/* TABLE STYLING */
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 15px; }
+th,td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: left; }
+th { color: var(--accent-green); }
 
-
-/* ===== Lightning Canvas - Az eredeti villám kód ===== */
-#scene {
-    position: absolute; /* Abszolút pozícionálás */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0; /* A tartalom alatt */
-    pointer-events: none;
-    /* A canvas nem a body-ra, hanem a hero dive-re kerül, így a 100% a hero méreteire vonatkozik */
+@media (max-width: 600px) {
+    .hero { flex-direction: column; text-align: center; }
+    .avatar { margin-bottom: 10px; }
 }
 </style>
 </head>
 <body>
+
+<canvas id="scene"></canvas>
+
 <div class="wrap">
 <header>
     <div class="hero">
-        <canvas id="hero-scene"></canvas> 
-        <div class="avatar">cityba</div>
+        <div class="avatar">SA</div>
         <div class="intro">
             <h1>Szitányi András</h1>
             <p class="muted">Autodidakta full-stack fejlesztő — optimalizálás, automatizálás, egyedi megoldások</p>
@@ -247,23 +208,23 @@ th { color: var(--neon-green); } /* Neon zöld táblázat fejlécek */
         <div class="card" id="proj1">
             <h3>Vérnyomás–pulzus logger</h3>
             <div class="muted">Egészségadat naplózó app — backend + egyszerű frontend.</div>
-            <p class="small" style="margin-top:10px">Kódoptimalizálás, adatbázis, egyszerű vizualizáció.</p>
+            <p class="small" style="margin-top:12px;">Kódoptimalizálás, adatbázis, egyszerű vizualizáció.</p>
         </div>
         <div class="card" id="proj2">
             <h3>Ügyfélkapus QR-auth</h3>
             <div class="muted">QR visszaállítás és authentikációs demo.</div>
-            <p class="small" style="margin-top:10px">Biztonság, gyors generálás, validálás.</p>
+            <p class="small" style="margin-top:12px;">Biztonság, gyors generálás, validálás.</p>
         </div>
         <div class="card" id="proj3">
             <h3>PowerShell fájlkereső</h3>
             <div class="muted">Windows utility, gyors indexelés és keresés.</div>
-            <p class="small" style="margin-top:10px">CLI, teljesítmény, memóriaoptimalizálás.</p>
+            <p class="small" style="margin-top:12px;">CLI, teljesítmény, memóriaoptimalizálás.</p>
         </div>
 
         <div class="card">
             <h3>CSV / Excel demo</h3>
             <div class="muted">Tölts fel egy CSV fájlt, és mutatom hogyan dolgozom fel.</div>
-            <input type="file" id="csvFile" accept=".csv" style="margin-top:15px; padding: 8px; border-radius: 8px; border: 1px solid rgba(var(--neon-green), 0.3); background-color: rgba(0,0,0,0.2); color: var(--text-color);">
+            <input type="file" id="csvFile" accept=".csv" style="margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid var(--text-muted); background-color: rgba(0,0,0,0.1); color: var(--text-light);">
             <div id="csvPreview" style="margin-top:12px;"></div>
         </div>
 
@@ -271,7 +232,7 @@ th { color: var(--neon-green); } /* Neon zöld táblázat fejlécek */
             <h3>API demó (GitHub)</h3>
             <div class="muted">Lekérdezem a GitHub publikus adataidat (repo száma, link).</div>
             <button id="fetchGithub" class="btn" style="margin-top:15px;">Lekérdezés</button>
-            <div id="apiResult" style="margin-top:12px; color:var(--muted)"></div>
+            <div id="apiResult" style="margin-top:12px; color:var(--text-muted)"></div>
         </div>
 
         <div class="card">
@@ -281,10 +242,11 @@ th { color: var(--neon-green); } /* Neon zöld táblázat fejlécek */
     </div>
 
     <section style="margin-top:40px">
-        <div class="card" id="contactForm"> <h3>Kapcsolat & Megrendelés</h3>
+        <div class="card" id="contactForm"> 
+            <h3>Kapcsolat & Megrendelés</h3>
             <p class="muted">
                 Küldj üzenetet e-mailben: 
-                <a href="mailto:cityba@gmail.com" style="color:var(--accent);text-decoration:underline;">cityba@gmail.com</a>
+                <a href="mailto:cityba@gmail.com" style="color:var(--accent-blue);text-decoration:underline;">cityba@gmail.com</a>
             </p>
             <p class="muted">Cégként vállalok megbízásokat.</p>
         </div>
@@ -295,6 +257,8 @@ th { color: var(--neon-green); } /* Neon zöld táblázat fejlécek */
 </div>
 
 <script>
+// ===== Segédfüggvények (Mivel a canvas a body elé került, a document.body már nem kell) =====
+
 // ===== Véletlen kódok =====
 const sampleCodes = [
     "for(i=0;i<10;i++){console.log(i)}",
@@ -308,7 +272,7 @@ document.getElementById('codeSnippet').onclick = ()=>{
     document.getElementById('codeSnippet').textContent = pick;
 };
 
-// ===== CSV feldolgozás =====
+// ===== CSV feldolgozás (Változatlan, modernizált táblázat stílusokkal) =====
 document.getElementById('csvFile').addEventListener('change',e=>{
     const f = e.target.files[0]; if(!f) return;
     const r = new FileReader();
@@ -317,7 +281,10 @@ document.getElementById('csvFile').addEventListener('change',e=>{
 });
 function renderCSV(txt){
     const rows = txt.split(/\r?\n/).filter(Boolean).map(r=>r.split(/,|;|\t/));
-    if (rows.length === 0) return;
+    if (rows.length < 2) {
+        document.getElementById('csvPreview').innerHTML = `<p style="color:red;">Nincs elegendő adat a megjelenítéshez.</p>`;
+        return;
+    }
 
     const tbl = document.createElement('table');
     const thead = document.createElement('thead');
@@ -330,7 +297,7 @@ function renderCSV(txt){
     tbl.appendChild(thead);
 
     // Adatok
-    for(let i=1;i<rows.length;i++){
+    for(let i=1;i<Math.min(rows.length, 6);i++){ // Max 5 sor megjelenítése
         const tr=document.createElement('tr');
         rows[i].forEach(c=>{const td=document.createElement('td');td.textContent=c;tr.appendChild(td)});
         tbody.appendChild(tr);
@@ -341,20 +308,20 @@ function renderCSV(txt){
     prev.innerHTML=''; prev.appendChild(tbl);
 }
 
-// ===== GitHub API =====
+// ===== GitHub API (Változatlan) =====
 document.getElementById('fetchGithub').onclick = async ()=>{
     const out = document.getElementById('apiResult');
     out.textContent = 'Lekérdezés...';
     try {
         const res = await fetch('https://api.github.com/users/cityba');
         const js = await res.json();
-        out.innerHTML = `Repos: <strong>${js.public_repos}</strong> • <a href="${js.html_url}" target="_blank" style="color:var(--accent); text-decoration: underline;">GitHub</a>`;
+        out.innerHTML = `Repos: <strong>${js.public_repos}</strong> • <a href="${js.html_url}" target="_blank" style="color:var(--accent-blue); text-decoration: underline;">GitHub</a>`;
     } catch(err){
         out.textContent = 'Hiba: ' + err;
     }
 };
 
-// ===== CV generálás =====
+// ===== CV generálás (Változatlan) =====
 document.getElementById('downloadCv').onclick = ()=>{
     const txt = `Szitányi András\nAutodidakta fejlesztő\nTech: PHP, JS, Python, Shell, MySQL\nProjektek: logger app, QR-auth, kereső`;
     const blob = new Blob([txt], {type:'text/plain'});
@@ -368,40 +335,35 @@ document.getElementById('downloadCv').onclick = ()=>{
     URL.revokeObjectURL(url);
 };
 
-// ===== Scroll hire =====
+// ===== Scroll hire (Változatlan) =====
 document.getElementById('hireBtn').onclick = ()=>{
     document.getElementById('contactForm').scrollIntoView({behavior:'smooth'});
 };
 
-// ===== Villám canvas =====
-// A canvas már a HTML-ben definiálva van a "hero" elemen belül
-const cvs = document.getElementById('hero-scene'); // A canvas ID-ja most hero-scene
+// ===== Villám canvas a teljes oldalon =====
+
+const cvs = document.getElementById('scene');
 const ctx = cvs.getContext('2d');
 
 const resizeCanvas = () => { 
-    cvs.width = cvs.offsetWidth; 
-    cvs.height = cvs.offsetHeight;
-    // Újra inicializáljuk a pontokat, hogy ne menjenek ki a canvasból méretezéskor
-    nodes.forEach(n => {
-        n.x = Math.random() * cvs.width;
-        n.y = Math.random() * cvs.height;
-    });
+    cvs.width = window.innerWidth; 
+    cvs.height = window.innerHeight;
+    // Pontok újrapozícionálása, ha szükséges (bár a draw loop kezeli a falakat)
 };
 window.addEventListener('resize', resizeCanvas);
-// Kezdeti méretezés, miután a DOM elkészült és a hero div mérete beállt
-setTimeout(resizeCanvas, 0);
+resizeCanvas(); // Kezdeti méretezés
 
 
 const nodes = [];
-const NODE_COUNT = 15; 
-const MAX_DIST = 400; 
-const MIN_DIST = 100; 
-const SPEED = 0.6; 
+const NODE_COUNT = 20; // Több pont
+const MAX_DIST = 350; // Kisebb távolság, lokálisabb villámok
+const MIN_DIST = 50; 
+const SPEED = 0.5; 
 
-// Fontos: a nodes tömböt itt inicializáljuk először
+// Pontok (nodes) inicializálása
 for (let i = 0; i < NODE_COUNT; i++) {
     nodes.push({
-        x: Math.random() * cvs.width, // cvs.width/height lehet, hogy 0 még
+        x: Math.random() * cvs.width,
         y: Math.random() * cvs.height,
         vx: (Math.random() - 0.5) * SPEED,
         vy: (Math.random() - 0.5) * SPEED
@@ -411,7 +373,7 @@ for (let i = 0; i < NODE_COUNT; i++) {
 /**
  * Villámvonal rajzolása fraktálos elven
  */
-function lightning(x1, y1, x2, y2, segments = 8, displace = 20) {
+function lightning(x1, y1, x2, y2, segments = 6, displace = 15) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     for (let i = 1; i < segments; i++) {
@@ -425,7 +387,7 @@ function lightning(x1, y1, x2, y2, segments = 8, displace = 20) {
 }
 
 function draw() {
-    // Halványodó háttér (Utófény effektus)
+    // Halványodó háttér (Utófény effektus a teljes oldalon)
     ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
     ctx.fillRect(0, 0, cvs.width, cvs.height);
 
@@ -444,16 +406,19 @@ function draw() {
             const d = Math.hypot(a.x - b.x, a.y - b.y);
 
             if (d < MAX_DIST) {
+                // Intenzitás kiszámítása: Közeli = 1.0 (max), távoli = 0.0
                 const intensity = Math.max(0, 1 - (d - MIN_DIST) / (MAX_DIST - MIN_DIST));
                 
-                const alpha = intensity * 0.8;
-                ctx.strokeStyle = `rgba(127, 255, 150, ${alpha})`;
-                ctx.lineWidth = 1 + intensity * 2;
+                // Villám stílusa: Zöld neon
+                const alpha = intensity * 0.7;
+                ctx.strokeStyle = `rgba(56, 238, 127, ${alpha})`;
+                ctx.lineWidth = 1 + intensity * 1.5;
                 
-                ctx.shadowBlur = 10 + intensity * 20; 
-                ctx.shadowColor = `rgba(127, 255, 150, ${intensity})`;
+                // Erőteljes utófény
+                ctx.shadowBlur = 8 + intensity * 10; 
+                ctx.shadowColor = `rgba(56, 238, 127, ${intensity})`;
 
-                lightning(a.x, a.y, b.x, b.y, 8, 20 * (1 - intensity)); 
+                lightning(a.x, a.y, b.x, b.y, 6, 15 * (1 - intensity)); 
 
                 ctx.shadowBlur = 0;
                 ctx.shadowColor = 'transparent';
@@ -463,11 +428,11 @@ function draw() {
     
     // Fénylő pontok rajzolása
     nodes.forEach(n => {
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(127, 255, 150, 1)';
-        ctx.fillStyle = 'rgba(127, 255, 150, 0.8)';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(56, 238, 127, 1)';
+        ctx.fillStyle = 'rgba(56, 238, 127, 0.9)';
         ctx.beginPath();
-        ctx.arc(n.x, n.y, 3, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, 2.5, 0, Math.PI * 2);
         ctx.fill();
         
         ctx.shadowBlur = 0;
