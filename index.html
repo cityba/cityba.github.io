@@ -3,37 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Szitányi András – Interaktív Portfólió</title>
+  <title>Szitányi András - Autodidakta fejlesztő</title>
   <style>
-    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at top, #0c0f16 0%, #07080c 100%);
+      font-family: "Segoe UI", sans-serif;
+      background: #0d0f13;
       color: #e6edf3;
+      margin: 0;
       overflow-x: hidden;
     }
+
+    /* --- Fejléc --- */
     header {
       position: relative;
-      height: 320px;
+      height: 280px;
+      background: radial-gradient(circle at center, #0b0d10, #000);
       overflow: hidden;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       flex-direction: column;
-      text-align: center;
-      background: linear-gradient(135deg, #081229, #101b33 50%, #0c0f16);
-    }
-    h1 {
-      font-size: 3em;
-      color: #58a6ff;
-      margin-bottom: 0.3em;
-      z-index: 2;
-    }
-    h3 {
-      font-weight: 400;
-      color: #9ba3af;
-      z-index: 2;
     }
 
     canvas {
@@ -41,154 +30,173 @@
       top: 0; left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
+      z-index: 0;
     }
 
-    section {
-      max-width: 900px;
-      margin: 60px auto;
+    header h1, header h3 {
+      z-index: 1;
+      text-align: center;
+      margin: 0;
+    }
+
+    header h1 {
+      font-size: 2.2em;
+      color: #58a6ff;
+      text-shadow: 0 0 10px #58a6ff, 0 0 20px #0070f3;
+    }
+
+    header h3 {
+      font-size: 1.2em;
+      color: #9abcee;
+    }
+
+    /* --- Tartalom --- */
+    main {
+      max-width: 800px;
+      margin: 40px auto;
       padding: 0 20px;
     }
 
-    h2 {
-      border-left: 4px solid #58a6ff;
-      padding-left: 10px;
-      color: #58a6ff;
-      margin-bottom: 20px;
-    }
-
     .card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 20px 25px;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 12px;
       margin-bottom: 20px;
-      transition: all 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: #58a6ff;
+      box-shadow: 0 0 10px rgba(88,166,255,0.1);
+      transition: transform 0.2s ease;
     }
 
-    .skills span {
-      background: rgba(88,166,255,0.1);
-      border: 1px solid rgba(88,166,255,0.2);
-      color: #58a6ff;
-      padding: 6px 12px;
-      margin: 4px;
-      border-radius: 12px;
-      display: inline-block;
-      font-size: 0.9em;
-      transition: 0.2s;
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(88,166,255,0.3);
     }
-    .skills span:hover { background: #58a6ff; color: #0d1117; }
+
+    h2 {
+      color: #58a6ff;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 5px;
+    }
+
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    .contact a {
+      display: inline-block;
+      margin-right: 10px;
+    }
 
     footer {
-      margin: 80px 0 30px;
       text-align: center;
+      margin: 60px 0 20px;
       font-size: 0.9em;
-      color: #8b949e;
+      color: #888;
     }
   </style>
 </head>
 <body>
   <header>
-    <canvas id="lightCanvas"></canvas>
+    <canvas id="electricCanvas"></canvas>
     <h1>Szitányi András</h1>
     <h3>Autodidakta Full-Stack Fejlesztő ⚡</h3>
-    <p>PHP • JavaScript • Python • API • Automatizálás • Egyedi megoldások</p>
   </header>
 
-  <section>
-    <h2>🎯 Projektek</h2>
-    <div class="card">
-      <strong>🩺 Vérnyomás–pulzus logger app</strong>
-      <p>Egészségadat-naplózó alkalmazás saját backend-rendszerrel.</p>
-    </div>
-    <div class="card">
-      <strong>🔐 Ügyfélkapus QR-authentikátor</strong>
-      <p>QR-kód visszafejtő és újrageneráló biztonsági authentikátor modul.</p>
-    </div>
-    <div class="card">
-      <strong>⚡ PowerShell fájlkereső</strong>
-      <p>Gyors, optimalizált kereső-utility Windows környezetre.</p>
-    </div>
-  </section>
+  <main>
+    <section class="intro">
+      <p>🔧 PHP • JavaScript • Python • MySQL • Shell • jQuery</p>
+      <p>🌐 Webappok | Automatizálás | API integráció | Egyedi megoldások</p>
+    </section>
 
-  <section>
-    <h2>💡 Technológiák</h2>
-    <div class="skills">
-      <span>PHP</span><span>JavaScript</span><span>Python</span><span>MySQL</span>
-      <span>Shell</span><span>API</span><span>HTML</span><span>CSS</span>
-      <span>Automation</span><span>Optimization</span>
-    </div>
-  </section>
+    <section class="projects">
+      <h2>Projektek</h2>
+      <div class="card">
+        <strong>Vérnyomás–pulzus logger app</strong><br>
+        Egyszerű egészségadat-naplózó alkalmazás saját fejlesztésben.
+      </div>
+      <div class="card">
+        <strong>Ügyfélkapus QR-authentikátor</strong><br>
+        QR-kód visszafejtő és újrageneráló authentikátor eszköz.
+      </div>
+      <div class="card">
+        <strong>PowerShell fájlkereső</strong><br>
+        Gyors, optimalizált kereső Windows alatt.
+      </div>
+    </section>
 
-  <section>
-    <h2>📬 Kapcsolat</h2>
-    <div class="card">
+    <section class="skills">
+      <h2>Technológiák</h2>
+      <p>PHP • JavaScript • Python • MySQL • Shell • HTML • CSS</p>
+    </section>
+
+    <section class="contact">
+      <h2>Kapcsolat</h2>
       <p>📧 <a href="mailto:cityba@gmail.com">cityba@gmail.com</a><br>
-      🔗 <a href="https://github.com/cityba" target="_blank">GitHub</a> |
-      <a href="https://www.linkedin.com/in/szit%C3%A1nyi-andr%C3%A1s-071a97371/" target="_blank">LinkedIn</a></p>
-    </div>
-  </section>
+      🔗 <a href="https://github.com/cityba">GitHub</a> |
+      <a href="https://www.linkedin.com/in/szit%C3%A1nyi-andr%C3%A1s-071a97371/">LinkedIn</a></p>
+    </section>
+  </main>
 
-  <footer>© 2025 Szita Team Kft | cityba.github.io</footer>
+  <footer>
+    © 2025 Szita Team Kft — Minden jog fenntartva
+  </footer>
 
   <script>
-    const canvas = document.getElementById('lightCanvas');
+    // Villám / adatvonal animáció
+    const canvas = document.getElementById('electricCanvas');
     const ctx = canvas.getContext('2d');
     let w, h;
+    const lines = [];
 
     function resize() {
       w = canvas.width = window.innerWidth;
-      h = canvas.height = document.querySelector('header').offsetHeight;
+      h = canvas.height = 280;
     }
+
     window.addEventListener('resize', resize);
     resize();
 
-    const points = Array.from({ length: 8 }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h / 1.5,
-      dx: (Math.random() - 0.5) * 1.2,
-      dy: (Math.random() - 0.5) * 1.2
-    }));
-
-    function draw() {
-      ctx.clearRect(0, 0, w, h);
-      ctx.beginPath();
-      for (let i = 0; i < points.length; i++) {
-        const p = points[i];
-        p.x += p.dx;
-        p.y += p.dy;
-        if (p.x < 0 || p.x > w) p.dx *= -1;
-        if (p.y < 0 || p.y > h) p.dy *= -1;
+    class Lightning {
+      constructor() {
+        this.reset();
       }
-      for (let i = 0; i < points.length - 1; i++) {
-        const p1 = points[i], p2 = points[i + 1];
-        ctx.strokeStyle = `rgba(88,166,255,${0.4 + Math.random() * 0.6})`;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.shadowColor = '#58a6ff';
-        ctx.shadowBlur = 8 + Math.random() * 12;
-        ctx.stroke();
-        // Villámágak
-        const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 20;
-        const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 20;
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(midX, midY);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.strokeStyle = `rgba(88,166,255,${Math.random()})`;
-        ctx.lineWidth = 1.2;
-        ctx.shadowBlur = 15;
-        ctx.stroke();
+      reset() {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.length = 80 + Math.random() * 100;
+        this.alpha = 0.3 + Math.random() * 0.7;
+        this.speed = 2 + Math.random() * 2;
+        this.angle = Math.random() * Math.PI * 2;
       }
-      requestAnimationFrame(draw);
+      draw() {
+        ctx.beginPath();
+        const xEnd = this.x + Math.cos(this.angle) * this.length;
+        const yEnd = this.y + Math.sin(this.angle) * this.length;
+        const grad = ctx.createLinearGradient(this.x, this.y, xEnd, yEnd);
+        grad.addColorStop(0, `rgba(88,166,255,${this.alpha})`);
+        grad.addColorStop(1, `rgba(0,255,255,0)`);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(xEnd, yEnd);
+        ctx.stroke();
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        if (Math.random() < 0.02) this.angle += (Math.random() - 0.5) * 0.5;
+        if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset();
+      }
     }
-    draw();
+
+    for (let i = 0; i < 45; i++) lines.push(new Lightning());
+
+    function animate() {
+      ctx.fillStyle = "rgba(0,0,0,0.15)";
+      ctx.fillRect(0,0,w,h);
+      lines.forEach(l => l.draw());
+      requestAnimationFrame(animate);
+    }
+
+    animate();
   </script>
 </body>
 </html>
