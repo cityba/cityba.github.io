@@ -211,7 +211,7 @@ th,td {
     </div>
   </div>
 
- <section style="margin-top:28px">
+<section style="margin-top:28px">
   <div class="card">
     <h3>Kapcsolat & Megrendelés</h3>
     <p class="muted">Küldj üzenetet, vagy töltsd le a CV-t — cégként vállalok megbízásokat.</p>
@@ -219,27 +219,42 @@ th,td {
       <input type="text" id="name" placeholder="Név" required style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
       <input type="email" id="email" placeholder="Email" required style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
       <textarea id="message" placeholder="Rövid leírás a megbízásról" required style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit" rows="4"></textarea>
-      <button type="button" class="btn" onclick="sendEmail()">Küldés</button>
+      <button type="button" class="btn" id="sendBtn">Küldés</button>
     </form>
   </div>
 </section>
 
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
 <script>
-  (function(){emailjs.init('YOUR_EMAILJS_USER_ID');})();
+document.getElementById('sendBtn').addEventListener('click', function() {
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const message = document.getElementById('message').value;
 
-  function sendEmail(){
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const message = document.getElementById('message').value;
-
-    if(!name || !email || !message){ alert('Kérlek töltsd ki az összes mezőt!'); return; }
-
-    emailjs.send('YOUR_SERVICE_ID','YOUR_TEMPLATE_ID',{name,email,message})
-      .then(()=>{alert('Üzenet elküldve!'); document.getElementById('contactForm').reset();})
-      .catch(err=>{alert('Hiba az üzenet küldésekor: '+err);});
+  if(!name || !email || !message){
+    alert('Kérlek töltsd ki az összes mezőt!');
+    return;
   }
+
+  Email.send({
+    SecureToken : "IDE_TEDD_AZ_OTP_GENERÁLT_SECURETOKENED",
+    To : 'cityba@gmail.com',
+    From : email,
+    Subject : `Új megbízás - ${name}`,
+    Body : message
+  }).then(
+    msg => {
+      if(msg === 'OK'){
+        alert('Üzenet elküldve!');
+        document.getElementById('contactForm').reset();
+      } else {
+        alert('Hiba az üzenet küldésekor: ' + msg);
+      }
+    }
+  );
+});
 </script>
+
 </main>
 
 <footer>© Szitányi András • cityba.github.io</footer>
