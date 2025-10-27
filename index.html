@@ -315,153 +315,141 @@ const resize = () => { cvs.width = window.innerWidth; cvs.height = window.innerH
 window.addEventListener('resize', resize);
 resize();
 
-const shapes = ['circle', 'square', 'triangle', 'octagon'];
 const nodes = [];
-const nodeCount = 15; // Növeltük a számot a jobb hatás érdekében
-const speed = 0.8; // Növeltük a sebességet
-const maxDistance = 300; // Csökkentettük a maximális távolságot a lokálisabb villámokhoz
+const NODE_COUNT = 25; // Több pont a komplexebb alakzatokért
+const MAX_DIST = 150; // Max távolság az összekötéshez
+const SPEED = 0.5;
 
-// Inicializálás
-for (let i = 0; i < nodeCount; i++) {
+// Pontok (nodes) inicializálása
+for (let i = 0; i < NODE_COUNT; i++) {
     nodes.push({
         x: Math.random() * cvs.width,
         y: Math.random() * cvs.height,
-        vx: (Math.random() - 0.5) * speed,
-        vy: (Math.random() - 0.5) * speed,
-        shape: shapes[Math.floor(Math.random() * shapes.length)], // Kezdeti alakzat
-        transformCounter: Math.floor(Math.random() * 240) // Számláló a transzformáláshoz (pl. 4 másodpercenként)
+        vx: (Math.random() - 0.5) * SPEED,
+        vy: (Math.random() - 0.5) * SPEED,
+        id: i
     });
 }
 
-/**
- * Villámvonal rajzolása fraktálos elven
- * @param {number} x1 - Kezdő X
- * @param {number} y1 - Kezdő Y
- * @param {number} x2 - Vég X
- * @param {number} y2 - Vég Y
- * @param {number} segments - Szegmensek száma
- */
-function lightning(x1, y1, x2, y2, segments = 10) {
+// Rekurzív függvény a közeli pontok összekötéséhez villámvonalakkal
+function lightning(x1, y1, x2, y2, segments = 5, displace = 10) {
+    if (segments < 1) return;
+    
+    // Alap villámvonal
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     for (let i = 1; i < segments; i++) {
         const t = i / segments;
-        // Enyhébb random eltérés a simább, de mégis "villámszerű" vonalhoz
-        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 15;
-        const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * 15;
+        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * displace;
+        const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * displace;
         ctx.lineTo(x, y);
     }
     ctx.lineTo(x2, y2);
     ctx.stroke();
 }
 
-/**
- * Alakzat rajzolása
- * @param {number} x - Közép X
- * @param {number} y - Közép Y
- * @param {string} shape - Alakzat típusa
- * @param {number} size - Méret (sugár/féloldal)
- */
-function drawShape(x, y, shape, size) {
+// Alakzat (poligon) rajzolása az összekötött pontokból
+function drawPolygon(points, fillStyle, strokeStyle) {
+    if (points.length < 3) return; // Minimum 3 pont kell az alakzathoz
+
     ctx.beginPath();
-    switch (shape) {
-        case 'circle': // Kör
-            ctx.arc(x, y, size, 0, Math.PI * 2);
-            break;
-        case 'square': // Négyzet (forgatva 45 fokkal)
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(Math.PI / 4);
-            ctx.rect(-size, -size, size * 2, size * 2);
-            ctx.restore();
-            break;
-        case 'triangle': // Háromszög
-            for (let i = 0; i < 3; i++) {
-                const angle = (i * 2 * Math.PI) / 3 - Math.PI / 2;
-                const px = x + size * Math.cos(angle);
-                const py = y + size * Math.sin(angle);
-                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-            }
-            ctx.closePath();
-            break;
-        case 'octagon': // Nyolcszög
-            for (let i = 0; i < 8; i++) {
-                const angle = (i * 2 * Math.PI) / 8;
-                const px = x + size * Math.cos(angle);
-                const py = y + size * Math.sin(angle);
-                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-            }
-            ctx.closePath();
-            break;
+    ctx.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
     }
+    ctx.closePath();
+
+    ctx.fillStyle = fillStyle;
     ctx.fill();
+
+    // Körvonal (finom villámvonal)
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < points.length; i++) {
+        const p1 = points[i];
+        const p2 = points[(i + 1) % points.length];
+        lightning(p1.x, p1.y, p2.x, p2.y, 4, 5); // Rövid, finom villám
+    }
 }
 
 function draw() {
-    // Halványodó háttér az utófény hatásért
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+    // Halványodó háttér a "szellemképes" mozgásért
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
     ctx.fillRect(0, 0, cvs.width, cvs.height);
 
-    // Mozgatás és alakzat transzformáció
+    // Mozgatás
     nodes.forEach(n => {
-        // Mozgás
         n.x += n.vx;
         n.y += n.vy;
         if (n.x < 0 || n.x > cvs.width) n.vx *= -1;
         if (n.y < 0 || n.y > cvs.height) n.vy *= -1;
-
-        // Alakzat transzformáció
-        n.transformCounter = (n.transformCounter + 1) % 240; // 240 képkockánként (~4 mp)
-        if (n.transformCounter === 0) {
-            let newShape;
-            do {
-                newShape = shapes[Math.floor(Math.random() * shapes.length)];
-            } while (newShape === n.shape); // Biztosan új alakzat
-            n.shape = newShape;
-        }
     });
 
-    // Villámok
-    for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-            const a = nodes[i],
-                b = nodes[j];
-            const d = Math.hypot(a.x - b.x, a.y - b.y);
+    // Alakzatok keresése és rajzolása
+    const connectedComponents = [];
+    const visited = new Set();
+    const adj = new Map(); // Szomszédsági lista
 
-            if (d < maxDistance) {
-                // Intenzitás a távolságtól függően
-                const intensity = Math.max(0, 1.2 - d / maxDistance) * 0.9;
-                
-                // Erősebb fényhatás a távolság és az idő függvényében
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = `rgba(127, 255, 150, ${intensity})`; 
-                ctx.strokeStyle = `rgba(127, 255, 150, ${intensity})`;
-                
-                // Véletlenszerű vonalvastagság
-                ctx.lineWidth = 1.5 + Math.random() * 1.5; 
-                
-                lightning(a.x, a.y, b.x, b.y, 8);
-                
-                // Árnyék visszaállítása
-                ctx.shadowBlur = 0;
-                ctx.shadowColor = 'transparent';
+    // 1. Szomszédsági lista építése
+    for (let i = 0; i < NODE_COUNT; i++) {
+        adj.set(nodes[i].id, []);
+        for (let j = i + 1; j < NODE_COUNT; j++) {
+            const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+            if (d < MAX_DIST) {
+                adj.get(nodes[i].id).push(nodes[j].id);
+                adj.get(nodes[j].id).push(nodes[i].id);
             }
         }
     }
 
-    // Alakzatok rajzolása (Glow pontok)
+    // 2. Összekötött komponensek (potenciális alakzatok) keresése DFS-sel
+    function dfs(nodeId, currentComponent) {
+        visited.add(nodeId);
+        currentComponent.push(nodes.find(n => n.id === nodeId));
+        adj.get(nodeId).forEach(neighborId => {
+            if (!visited.has(neighborId)) {
+                dfs(neighborId, currentComponent);
+            }
+        });
+    }
+
     nodes.forEach(n => {
-        // Kisebb, zöld középpont
-        ctx.fillStyle = `rgb(0, 156, 0)`;
-        drawShape(n.x, n.y, n.shape, 3);
-        
-        // Utófény a pontok körül
+        if (!visited.has(n.id)) {
+            const component = [];
+            dfs(n.id, component);
+            if (component.length >= 3) {
+                connectedComponents.push(component);
+            }
+        }
+    });
+
+    // 3. Alakzatok rajzolása
+    connectedComponents.forEach(component => {
+        // Alakzat belső kitöltése (utófény)
+        const intensity = Math.min(0.2, 0.05 + component.length * 0.01);
         ctx.shadowBlur = 10;
-        ctx.shadowColor = `rgba(127, 255, 150, 1)`;
-        ctx.fillStyle = `rgba(127, 255, 150, 0.5)`;
-        drawShape(n.x, n.y, n.shape, 6);
-        
-        // Árnyék visszaállítása
+        ctx.shadowColor = 'rgba(127, 255, 150, 1)'; // Erős zöld utófény
+        drawPolygon(component, `rgba(127, 255, 150, ${intensity})`, `rgba(127, 255, 150, 0)`);
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
+    });
+
+
+    // Fénylő pontok (node-ok) rajzolása
+    nodes.forEach(n => {
+        // Középpont
+        ctx.fillStyle = 'rgba(0,156,0,1)';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glow (nagyobb, átlátszó kör)
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(127, 255, 150, 1)';
+        ctx.fillStyle = 'rgba(127, 255, 150, 0.4)';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 5, 0, Math.PI * 2);
+        ctx.fill();
         ctx.shadowBlur = 0;
         ctx.shadowColor = 'transparent';
     });
