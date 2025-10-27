@@ -298,9 +298,18 @@ document.getElementById('hireBtn').onclick = ()=>{
 };
 
 // ===== Villám canvas =====
-const cvs = document.getElementById('scene');
+
+const heroDiv = document.querySelector('.hero');
+const cvs = document.createElement('canvas');
+cvs.id = 'scene';
+cvs.style.position = 'absolute';
+cvs.style.inset = '0';
+cvs.style.zIndex = '0';
+cvs.style.pointerEvents = 'none';
+heroDiv.prepend(cvs);
+
 const ctx = cvs.getContext('2d');
-const resize = () => { cvs.width = cvs.offsetWidth; cvs.height = cvs.offsetHeight; };
+const resize = () => { cvs.width = heroDiv.offsetWidth; cvs.height = heroDiv.offsetHeight; };
 window.addEventListener('resize', resize); resize();
 
 const nodes = [];
