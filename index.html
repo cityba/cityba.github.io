@@ -357,7 +357,7 @@ function draw(){
       const d=Math.hypot(a.x-b.x,a.y-b.y);
       if(d<400){ // nagyobb távolságot is összeköt
         const intensity = Math.min(1, 0.8 - d/600 + 0.3); // távolabb erősebb
-        ctx.strokeStyle=`rgba(255,255,255,${intensity})`;
+        ctx.strokeStyle=`rgba(0,156,0,${intensity})`;
         ctx.lineWidth=2 + Math.random()*1.5;
         lightning(a.x,a.y,b.x,b.y,8);
       }
@@ -366,7 +366,7 @@ function draw(){
 
   // Glow pontok
   nodes.forEach(n=>{
-    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.fillStyle='rgba(0,156,0,0.3)';
     ctx.beginPath();
     ctx.arc(n.x,n.y,4,0,Math.PI*2);
     ctx.fill();
